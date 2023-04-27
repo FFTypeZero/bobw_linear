@@ -19,7 +19,8 @@ def fw_XY_combi(Y, reg_l2=0, iters=1000, step_size=.5, viz_step = 9999, initial=
             rho = Y@l_inv
             return rho, l_inv
         rho, l_inv = f(design)
-        if count % (viz_step) == 0: print('fw_XY_combi:',np.sqrt(np.max(rho)), np.min(l_inv))
+        if count % (viz_step) == 0: 
+            print('fw_XY_combi:',np.sqrt(np.max(rho)), np.min(l_inv))
         y_opt = Y[np.argmax(rho),:]
         g = y_opt * l_inv
         g = -g * g
