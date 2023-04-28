@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sklearn
 
 
 def fw_XY_combi(Y, reg_l2=0, iters=1000, step_size=.5, viz_step = 9999, initial=None, line_search=False ):
