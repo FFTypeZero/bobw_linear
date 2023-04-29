@@ -10,6 +10,11 @@ class BAI_Base:
         self.d = X.shape[1]
         self.T = T
 
+    def __fw_XXi(self, X, X_i):
+        Y_i = X_i[:, np.newaxis, :] - X_i[np.newaxis, :, :]
+        design_i, rho_i = fw_XY(X, Y_i)
+        return design_i, rho_i
+
     def run(self):
         pass
 
