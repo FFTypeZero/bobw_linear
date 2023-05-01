@@ -5,10 +5,11 @@ from fw import fw_XY
 
 
 class P1_Linear(BAI_Base):
-    def __init__(self, X, T, reward_func, alt=False, subroutine_max_iter=15) -> None:
+    def __init__(self, X, T, reward_func, batch=False, alt=False, subroutine_max_iter=15) -> None:
         self.G_design = fw_XY(X, X)[0]
         self.max_iter = subroutine_max_iter
         self.alt = alt
+        self.batch = batch
 
         if alt:
             self.n = X.shape[0]
@@ -113,6 +114,11 @@ class P1_Linear(BAI_Base):
         return design_out
 
     def run(self):
+        if self.batch:
+            rho_start = self.__fw_XXi(self.X, self.X)[1]
+            num_epoches = int(np.ceil(np.log2(rho_start)))
+            epoch_length = int(np.floor(self.T / num_epoches))
+
         design_t = self.G_design
         theta_hat_t = np.zeros(self.d)
         for t in range(self.T):
@@ -124,6 +130,8 @@ class P1_Linear(BAI_Base):
             theta_hat_t = (theta_hat_t * t + theta_hat_s) / (t + 1)
 
             # Compute design for next round
+            if self.batch and t % epoch_length != 0:
+                continue
             if self.alt:
                 print(f"P1_Linear: starts round {t} alt_subroutine.")
                 design_t = self.alt_subroutine(theta_hat_t)
@@ -135,9 +143,9 @@ class P1_Linear(BAI_Base):
 
 if __name__ == '__main__':
     omega = 0.01
-    d = 3
-    T = 2000
-    num_trials = 20
+    d = 10
+    T = 30000
+    num_trials = 2000
 
     X = np.eye(d)
     x_extra = np.zeros(d)
@@ -151,7 +159,7 @@ if __name__ == '__main__':
     num_correct = 0
     for _ in range(num_trials):
         print("Trial {}/{}".format(_ + 1, num_trials))
-        recommendation = P1_Linear(X, T, reward_func, alt=False).run()
+        recommendation = P1_Linear(X, T, reward_func, batch=True, alt=False).run()
         if np.all(recommendation == X[0]):
             num_correct += 1
     print("G_design accuracy = {}".format(num_correct / num_trials))
