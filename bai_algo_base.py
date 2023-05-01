@@ -61,4 +61,5 @@ if __name__ == '__main__':
             num_correct += 1
         else:
             print("incorrect! recommendation = {}".format(recommendation))
+        print("G_design current accuracy = {}".format(num_correct / (_ + 1)))
     print("G_design accuracy = {}".format(num_correct / num_trials))

@@ -166,4 +166,5 @@ if __name__ == '__main__':
             num_correct += 1
         else:
             print("incorrect! recommendation = {}".format(recommendation))
+        print("RAGE current accuracy = {}".format(num_correct / (_ + 1)))
     print("RAGE accuracy = {}".format(num_correct / num_trials))

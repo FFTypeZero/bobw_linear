@@ -29,7 +29,6 @@ class P1_Linear(BAI_Base):
         y_hat = self.X@theta_hat
         sorted_idx = np.flip(np.argsort(y_hat))
         X_i = self.X[sorted_idx]
-        print(X_i[0]@theta_hat - y_hat[sorted_idx])
 
         design_bar = np.zeros(self.n)
         i_count = 0
@@ -159,7 +158,10 @@ if __name__ == '__main__':
     num_correct = 0
     for _ in range(num_trials):
         print("Trial {}/{}".format(_ + 1, num_trials))
-        recommendation = P1_Linear(X, T, reward_func, batch=True, alt=False).run()
+        recommendation = P1_Linear(X, T, reward_func, batch=True, alt=True).run()
         if np.all(recommendation == X[0]):
             num_correct += 1
-    print("G_design accuracy = {}".format(num_correct / num_trials))
+        else:
+            print("incorrect! recommendation = {}".format(recommendation))
+        print("BOBW current accuracy = {}".format(num_correct / (_ + 1)))
+    print("BOBW accuracy = {}".format(num_correct / num_trials))
