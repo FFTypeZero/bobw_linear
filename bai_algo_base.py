@@ -42,7 +42,7 @@ if __name__ == '__main__':
     omega = 0.01
     d = 10
     T = 30000
-    num_trials = 20
+    num_trials = 2000
 
     X = np.eye(d)
     x_extra = np.zeros(d)
@@ -59,4 +59,6 @@ if __name__ == '__main__':
         recommendation = BAI_G_Design(X, T, reward_func).run()
         if np.all(recommendation == X[0]):
             num_correct += 1
+        else:
+            print("incorrect! recommendation = {}".format(recommendation))
     print("G_design accuracy = {}".format(num_correct / num_trials))

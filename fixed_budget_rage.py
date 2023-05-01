@@ -76,6 +76,7 @@ class RAGE(BAI_Base):
                 allocation_i = self.__rounding(design_i, self.T - epoch_length * epoch)
 
             # Pull arms and compute theta_hat by least square estimation
+            # print("epoch = {}, allocation_i = {}".format(epoch + 1, allocation_i))
             covariance = np.zeros((self.d, self.d))
             target = np.zeros(self.d)
             for j, num in enumerate(allocation_i):
@@ -115,13 +116,14 @@ class RAGE(BAI_Base):
             design_i = (sto_design_i + self.G_design) / 2
 
             # Pull arms and compute theta_hat by IPS estimation
+            Sigma_i = self.X.T@np.diag(design_i)@self.X
             if epoch == num_epoches - 1:
                 epoch_length = self.T - epoch_length * epoch
             for _ in range(epoch_length):
                 i_t = np.random.choice(self.n, p=design_i)
                 r_t = self.reward_func(self.X[i_t], t)
-                Sigma = self.X.T@np.diag(design_i)@self.X
-                theta_hat_s = np.linalg.solve(Sigma, self.X[i_t] * r_t)
+
+                theta_hat_s = np.linalg.solve(Sigma_i, self.X[i_t] * r_t)
                 theta_hat_t = (theta_hat_t * t + theta_hat_s) / (t + 1)
                 t += 1
 
@@ -145,7 +147,7 @@ if __name__ == '__main__':
     omega = 0.01
     d = 10
     T = 30000
-    num_trials = 20
+    num_trials = 2000
 
     X = np.eye(d)
     x_extra = np.zeros(d)
@@ -159,7 +161,9 @@ if __name__ == '__main__':
     num_correct = 0
     for _ in range(num_trials):
         print("Trial {}/{}".format(_ + 1, num_trials))
-        recommendation = RAGE(X, T, reward_func, bobw=False).run()
+        recommendation = RAGE(X, T, reward_func, bobw=True).run()
         if np.all(recommendation == X[0]):
             num_correct += 1
-    print("G_design accuracy = {}".format(num_correct / num_trials))
+        else:
+            print("incorrect! recommendation = {}".format(recommendation))
+    print("RAGE accuracy = {}".format(num_correct / num_trials))
