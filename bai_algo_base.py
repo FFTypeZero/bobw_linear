@@ -10,10 +10,10 @@ class BAI_Base:
         self.d = X.shape[1]
         self.T = T
 
-    def __fw_XXi(self, X, X_i):
-        Y_i = X_i[:, np.newaxis, :] - X_i[np.newaxis, :, :]
-        design_i, rho_i = fw_XY(X, Y_i)
-        return design_i, rho_i
+    # def __fw_XXi(self, X, X_i):
+    #     Y_i = X_i[:, np.newaxis, :] - X_i[np.newaxis, :, :]
+    #     design_i, rho_i = fw_XY(X, Y_i)
+    #     return design_i, rho_i
 
     def run(self):
         pass
@@ -22,6 +22,7 @@ class BAI_Base:
 class BAI_G_Design(BAI_Base):
     def __init__(self, X, T, reward_func) -> None:
         self.G_design = fw_XY(X, X)[0]
+        print("G_design computation complete.")
         self.Sigma = X.T@np.diag(self.G_design)@X
         super().__init__(X, T, reward_func)
 
@@ -32,5 +33,30 @@ class BAI_G_Design(BAI_Base):
             r_t = self.reward_func(self.X[i_t], t)
             theta_hat_s = np.linalg.solve(self.Sigma, self.X[i_t] * r_t)
             theta_hat_t = (theta_hat_t * t + theta_hat_s) / (t + 1)
+            if t % 1000 == 0:
+                print("BAI_G_Design: t = {}".format(t))
         recommendation = np.argmax(self.X@theta_hat_t)
-        return recommendation
+        return self.X[recommendation]
+
+if __name__ == '__main__':
+    omega = 0.01
+    d = 10
+    T = 30000
+    num_trials = 20
+
+    X = np.eye(d)
+    x_extra = np.zeros(d)
+    x_extra[0] = np.cos(omega)
+    x_extra[1] = np.sin(omega)
+    X = np.vstack((X, x_extra))
+    theta = np.zeros(d)
+    theta[0] = 2.0
+    reward_func = lambda x, t: np.random.normal(x@theta, 1)
+
+    num_correct = 0
+    for _ in range(num_trials):
+        print("Trial {}/{}".format(_ + 1, num_trials))
+        recommendation = BAI_G_Design(X, T, reward_func).run()
+        if np.all(recommendation == X[0]):
+            num_correct += 1
+    print("G_design accuracy = {}".format(num_correct / num_trials))

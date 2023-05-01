@@ -10,6 +10,12 @@ class RAGE(BAI_Base):
         self.G_design = fw_XY(X, X)[0]
         super().__init__(X, T, reward_func)
 
+    def __fw_XXi(self, X, X_i):
+        Y_i = X_i[:, np.newaxis, :] - X_i[np.newaxis, :, :]
+        Y_i = np.reshape(Y_i, (-1, self.d))
+        design_i, rho_i = fw_XY(X, Y_i)
+        return design_i, rho_i
+
     def __rounding(self, design, num_samples):        
         '''
         Routine to convert design to allocation over num_samples following rounding procedures in Pukelsheim.
@@ -56,11 +62,13 @@ class RAGE(BAI_Base):
         rho_start = self.__fw_XXi(self.X, self.X)[1]
         num_epoches = int(np.ceil(np.log2(rho_start)))
         epoch_length = int(np.floor(self.T / num_epoches))
+        print("RAGE: num_epoches = {}, epoch_length = {}".format(num_epoches, epoch_length))
 
         X_i = self.X
         t = 0
         for epoch in range(num_epoches):
             # Compute design and allocation
+            print("RAGE: Epoch {}/{}".format(epoch + 1, num_epoches))
             design_i, rho_i = self.__fw_XXi(self.X, X_i)
             if epoch < num_epoches - 1:
                 allocation_i = self.__rounding(design_i, epoch_length)
@@ -68,19 +76,19 @@ class RAGE(BAI_Base):
                 allocation_i = self.__rounding(design_i, self.T - epoch_length * epoch)
 
             # Pull arms and compute theta_hat by least square estimation
-            covariance = self.reg * np.eye(self.d)
+            covariance = np.zeros((self.d, self.d))
             target = np.zeros(self.d)
             for j, num in enumerate(allocation_i):
                 for _ in range(num):
                     covariance += np.outer(self.X[j], self.X[j])
                     target += self.X[j] * self.reward_func(self.X[j], t)
                     t += 1
-            theta_hat_i = np.linalg.solve(covariance, target)
+            theta_hat_i = np.linalg.pinv(covariance) @ target
 
             # Eliminate arms
             if epoch < num_epoches - 1:
                 y_hat = X_i@theta_hat_i
-                X_i = X_i[np.argsort(y_hat, order='descending')]
+                X_i = X_i[np.flip(np.argsort(y_hat))]
                 X_i = self.__eliminate_Xi(rho_i / 2, X_i)
                 if X_i.shape[0] == 1:
                     break
@@ -95,12 +103,14 @@ class RAGE(BAI_Base):
         rho_start = self.__fw_XXi(self.X, self.X)[1]
         num_epoches = int(np.ceil(np.log2(rho_start)))
         epoch_length = int(np.floor(self.T / num_epoches))
+        print("Modified RAGE: num_epoches = {}, epoch_length = {}".format(num_epoches, epoch_length))
 
         X_i = self.X
         theta_hat_t = np.zeros(self.d)
         t = 0
-        for epoch in (num_epoches):
+        for epoch in range(num_epoches):
             # Compute design and mix it with G_design
+            print("Modified RAGE: Epoch {}/{}".format(epoch + 1, num_epoches))
             sto_design_i, rho_i = self.__fw_XXi(self.X, X_i)
             design_i = (sto_design_i + self.G_design) / 2
 
@@ -118,7 +128,7 @@ class RAGE(BAI_Base):
             # Eliminate arms for design computing
             if epoch < num_epoches - 1 and X_i.shape[0] > 1:
                 y_hat = X_i@theta_hat_t
-                X_i = X_i[np.argsort(y_hat, order='descending')]
+                X_i = X_i[np.flip(np.argsort(y_hat))]
                 X_i = self.__eliminate_Xi(rho_i / 2, X_i)
 
         recommendation = np.argmax(self.X@theta_hat_t)
@@ -129,3 +139,27 @@ class RAGE(BAI_Base):
             return self.bobw_run()
         else:
             return self.sto_run()
+
+
+if __name__ == '__main__':
+    omega = 0.01
+    d = 10
+    T = 30000
+    num_trials = 20
+
+    X = np.eye(d)
+    x_extra = np.zeros(d)
+    x_extra[0] = np.cos(omega)
+    x_extra[1] = np.sin(omega)
+    X = np.vstack((X, x_extra))
+    theta = np.zeros(d)
+    theta[0] = 2.0
+    reward_func = lambda x, t: np.random.normal(x@theta, 1)
+
+    num_correct = 0
+    for _ in range(num_trials):
+        print("Trial {}/{}".format(_ + 1, num_trials))
+        recommendation = RAGE(X, T, reward_func, bobw=False).run()
+        if np.all(recommendation == X[0]):
+            num_correct += 1
+    print("G_design accuracy = {}".format(num_correct / num_trials))
