@@ -492,3 +492,4 @@ vignettes/*.pdf
 
 .vscode/
 *.DESKTOP-T775K6F
+*.npz
