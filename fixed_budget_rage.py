@@ -161,7 +161,7 @@ if __name__ == '__main__':
     num_correct = 0
     for _ in range(num_trials):
         print("Trial {}/{}".format(_ + 1, num_trials))
-        recommendation = RAGE(X, T, reward_func, bobw=True).run()
+        recommendation = RAGE(X, T, reward_func, bobw=False).run()
         if np.all(recommendation == X[0]):
             num_correct += 1
         else:

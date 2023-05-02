@@ -14,6 +14,8 @@ def single_trial(trial_id, X, T, theta, algo):
         recommendation = BAI_G_Design(X, T, reward_func).run()
     elif algo == 'RAGE':
         recommendation = RAGE(X, T, reward_func).run()
+    elif algo == 'Modified_RAGE':
+        recommendation = RAGE(X, T, reward_func, bobw=True).run()
     elif algo == 'BOBW':
         recommendation = P1_Linear(X, T, reward_func, batch=True, alt=True).run()
     else:
@@ -56,13 +58,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     algo = args.algorithm
-    d = 10
+    ds = [8, 9, 10, 11, 12, 13]
+    # d = 10
     n_trials = 1500
     omega = 0.01
-    Ts = np.array([12000 + 3000 * i for i in range(7)])
-    results_total = np.zeros((len(Ts), n_trials))
+    # Ts = np.array([12000 + 3000 * i for i in range(7)])
+    T = 30000
+    results_total = np.zeros((len(ds), n_trials))
 
-    for i, T in enumerate(Ts):
+    for i, d in enumerate(ds):
         X = np.eye(d)
         x_extra = np.zeros(d)
         x_extra[0] = np.cos(omega)
@@ -74,5 +78,5 @@ if __name__ == "__main__":
         results = run_trials_in_parallel(n_trials, X, T, theta, algo, 6)
         results_total[i] = np.array(results)
 
-    np.savez_compressed('plot_data/{}/{}_results_budget.npz'.format(algo, algo, d), results=results_total, Ts=Ts)
+    np.savez_compressed(f'plot_data/{algo}/{algo}_results_dim.npz', results=results_total, ds=ds)
     print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
