@@ -6,18 +6,9 @@ from fixed_budget_rage import RAGE
 from bobw_algo import P1_Linear
 
 
-def single_trial(trial_id, d, algo):
+def single_trial(trial_id, X, T, theta, algo):
     print(f"Trial {trial_id} started.")
-    omega = 0.01
-    T = 30000
-
-    X = np.eye(d)
-    x_extra = np.zeros(d)
-    x_extra[0] = np.cos(omega)
-    x_extra[1] = np.sin(omega)
-    X = np.vstack((X, x_extra))
-    theta = np.zeros(d)
-    theta[0] = 2.0
+    
     reward_func = lambda x, t: np.random.normal(x@theta, 1)
     if algo == 'G_design':
         recommendation = BAI_G_Design(X, T, reward_func).run()
@@ -36,13 +27,12 @@ def single_trial(trial_id, d, algo):
     print(f"Trial {trial_id} finished with result {result}.")
     return result
 
-def run_trials_in_parallel(n_trials, d, algo, n_workers=None):
+def run_trials_in_parallel(n_trials, X, T, theta, algo, n_workers=None):
     if n_workers is None:
-        n_workers = min(n_trials, 4)  # Use at most 4 workers by default
+        n_workers = min(n_trials, 4) 
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
-        # Submit all the trials to the executor
-        futures = {executor.submit(single_trial, i, d, algo): i for i in range(n_trials)}
+        futures = {executor.submit(single_trial, i, X, T, theta, algo): i for i in range(n_trials)}
 
         results = []
         for future in concurrent.futures.as_completed(futures):
@@ -59,17 +49,30 @@ def run_trials_in_parallel(n_trials, d, algo, n_workers=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run experiments in parallel")
-    parser.add_argument("-d", "--dimension", type=int, default=8,
-                        help="Arm dimensions (default: 8)")
+    # parser.add_argument("-d", "--dimension", type=int, default=10,
+    #                     help="Arm dimensions (default: 8)")
     parser.add_argument("-a", "--algorithm", type=str, default='G_design',
                         help="BAI algorithm to run (default: G_design)")
     args = parser.parse_args()
 
-    d = args.dimension
     algo = args.algorithm
+    d = 10
     n_trials = 1500
-    results = run_trials_in_parallel(n_trials, d, algo, 6)
-    results = np.array(results)
+    omega = 0.01
+    Ts = np.array([12000 + 3000 * i for i in range(7)])
+    results_total = np.zeros((len(Ts), n_trials))
 
-    print(f"{algo} Accuracy: {np.mean(results)}")
-    np.savez_compressed('plot_data/{}/{}_results_d{}.npz'.format(algo, algo, d), results=results)
+    for i, T in enumerate(Ts):
+        X = np.eye(d)
+        x_extra = np.zeros(d)
+        x_extra[0] = np.cos(omega)
+        x_extra[1] = np.sin(omega)
+        X = np.vstack((X, x_extra))
+        theta = np.zeros(d)
+        theta[0] = 2.0
+
+        results = run_trials_in_parallel(n_trials, X, T, theta, algo, 6)
+        results_total[i] = np.array(results)
+
+    np.savez_compressed('plot_data/{}/{}_results_budget.npz'.format(algo, algo, d), results=results_total, Ts=Ts)
+    print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
