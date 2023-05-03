@@ -58,15 +58,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     algo = args.algorithm
-    ds = [8, 9, 10, 11, 12, 13]
-    # d = 10
-    n_trials = 1500
-    omega = 0.01
-    # Ts = np.array([12000 + 3000 * i for i in range(7)])
-    T = 30000
-    results_total = np.zeros((len(ds), n_trials))
+    # ds = [8, 9, 10, 11, 12, 13]
+    d = 10
+    n_trials = 5000
+    omega = 0.1
+    Ts = np.array([10 + 3000 * i for i in range(11)])
+    # T = 30000
+    results_total = np.zeros((len(Ts), n_trials))
 
-    for i, d in enumerate(ds):
+    for i, T in enumerate(Ts):
         X = np.eye(d)
         x_extra = np.zeros(d)
         x_extra[0] = np.cos(omega)
@@ -78,5 +78,5 @@ if __name__ == "__main__":
         results = run_trials_in_parallel(n_trials, X, T, theta, algo, 6)
         results_total[i] = np.array(results)
 
-    np.savez_compressed(f'plot_data/{algo}/{algo}_results_dim.npz', results=results_total, ds=ds)
+    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_budget.npz', results=results_total, Ts=Ts)
     print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 if __name__ == "__main__":
-    algos = ['G_design', 'RAGE', 'BOBW']
+    algos = ['G_design', 'RAGE', 'BOBW', 'Modified_RAGE']
     for algo in algos:
         loaded = np.load(f'plot_data/{algo}/{algo}_results_dim.npz')
         results = loaded['results']
