@@ -73,8 +73,8 @@ if __name__ == '__main__':
     n_trials = 5000
     omega = 0.2
     T = 30000
-    initial_stay = 10
     move_gap = 200
+    osci_mags = [0.5, 1.0, 2.0, 4.0, 8.0]
 
     X = np.eye(d)
     x_extra = np.zeros(d)
@@ -87,35 +87,19 @@ if __name__ == '__main__':
     theta2 = np.zeros(d)
     theta2[0] = 2.0
 
-    # ts = [i for i in range(move_gap)]
-    # stay_count = 1
-    # while len(ts) < int(T/3):
-    #     stay_length = int(initial_stay * stay_count)
-    #     ts.extend([i for i in range(move_gap, 0, -1)])
-    #     ts.extend([0 for j in range(stay_length)])
-    #     ts.extend([i for i in range(move_gap)])
-    #     stay_count += 1
-    # stay_count = 1
-    # while len(ts) < T:
-    #     stay_length = int(10 * initial_stay * stay_count)
-    #     ts.extend([move_gap for j in range(stay_length)])
-    #     ts.extend([i for i in range(move_gap, 0, -1)])
-    #     ts.extend([i for i in range(move_gap)])
-    #     stay_count += 1
-    # ts = np.array(ts[:T])
-
+    results_total = np.zeros((len(osci_mags), n_trials))
     ts = np.arange(T)
-    thetas = np.zeros((T, d))
-    thetas[:] = theta2
-    thetas[:, -1] = 4.0 * np.sin(ts / move_gap) + 2.0
-    # thetas[:int(T/3), :] = theta1
-    # thetas[int(T/3)+1:, :] = theta2
-    # thetas[:, 0] = 2.0 * np.cos(ts * omega / move_gap)
-    # thetas[:, 1] = 2.0 * np.sin(ts * omega / move_gap)
+    for i, osci_mag in enumerate(osci_mags):
+        thetas = np.zeros((T, d))
+        thetas[:] = theta2
+        thetas[:, -1] = osci_mag * np.sin(ts / move_gap) + 2.01
+        # thetas[:int(T/3), :] = theta1
+        # thetas[int(T/3)+1:, :] = theta2
 
-    gap, opt_arm = compute_gap(X, thetas)
+        gap, opt_arm = compute_gap(X, thetas)
 
-    results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
+        results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
+        results_total[i] = results
 
-    print(f"{algo} Accuracy: {np.mean(results)}")
-    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv2.npz', results=results, thetas=thetas)
+    print(f"{algo} Accuracy: {np.mean(results, axis=1)}")
+    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv3.npz', results=results_total)
