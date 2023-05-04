@@ -17,7 +17,7 @@ def single_trial(trial_id, X, T, thetas, opt_arm, algo):
     elif algo == 'Modified_RAGE':
         recommendation = RAGE(X, T, reward_func, bobw=True).run()
     elif algo == 'BOBW':
-        recommendation = P1_Linear(X, T, reward_func, batch=True, alt=True).run()
+        recommendation = P1_Linear(X, T, reward_func, batch=True, alt=True, subroutine_max_iter=15).run()
     else:
         raise ValueError("Unknown algo: {}".format(algo))
     if np.all(recommendation == X[opt_arm]):
@@ -53,10 +53,12 @@ def run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, n_workers=None
 def compute_gap(X, thetas):
     vals = X @ thetas.T
     ave_vals = np.mean(vals, axis=1)
-    print(f'optimal arm: {np.argmax(ave_vals)}')
+    opt_arm = np.argmax(ave_vals)
+    print(f'optimal arm: {opt_arm}')
     ave_vals = np.sort(ave_vals)
     gap = ave_vals[-1] - ave_vals[-2]
-    return gap
+    print(f"Gap: {gap}")
+    return gap, opt_arm
 
 
 if __name__ == '__main__':
@@ -69,7 +71,7 @@ if __name__ == '__main__':
 
     d = 10
     n_trials = 5000
-    omega = 0.5
+    omega = 0.2
     T = 30000
     initial_stay = 10
     move_gap = 200
@@ -102,17 +104,18 @@ if __name__ == '__main__':
     #     stay_count += 1
     # ts = np.array(ts[:T])
 
+    ts = np.arange(T)
     thetas = np.zeros((T, d))
-    thetas[:int(T/3), :] = theta1
-    thetas[int(T/3)+1:, :] = theta2
+    thetas[:] = theta2
+    thetas[:, -1] = 4.0 * np.sin(ts / move_gap) + 2.0
+    # thetas[:int(T/3), :] = theta1
+    # thetas[int(T/3)+1:, :] = theta2
     # thetas[:, 0] = 2.0 * np.cos(ts * omega / move_gap)
     # thetas[:, 1] = 2.0 * np.sin(ts * omega / move_gap)
 
-    # gap = compute_gap(X, thetas)
-    # print(f"Gap: {gap}")
+    gap, opt_arm = compute_gap(X, thetas)
 
-    opt_arm = 0
     results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
 
     print(f"{algo} Accuracy: {np.mean(results)}")
-    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv.npz', results=results, thetas=thetas)
+    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv2.npz', results=results, thetas=thetas)
