@@ -6,7 +6,7 @@ from fixed_budget_rage import RAGE
 from bobw_algo import P1_Linear
 
 
-def single_trial(trial_id, X, T, theta, algo):
+def single_trial(trial_id, X, T, theta, opt_arm, algo):
     print(f"Trial {trial_id} started.")
     
     reward_func = lambda x, t: np.random.normal(x@theta, 1)
@@ -20,7 +20,7 @@ def single_trial(trial_id, X, T, theta, algo):
         recommendation = P1_Linear(X, T, reward_func, batch=True, alt=True).run()
     else:
         raise ValueError("Unknown algo: {}".format(algo))
-    if np.all(recommendation == X[0]):
+    if np.all(recommendation == X[opt_arm]):
         result = 1
         print("correct! recommendation = {}".format(recommendation))
     else:
@@ -29,12 +29,13 @@ def single_trial(trial_id, X, T, theta, algo):
     print(f"Trial {trial_id} finished with result {result}.")
     return result
 
-def run_trials_in_parallel(n_trials, X, T, theta, algo, n_workers=None):
+
+def run_trials_in_parallel(n_trials, X, T, theta, opt_arm, algo, n_workers=None):
     if n_workers is None:
         n_workers = min(n_trials, 4) 
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
-        futures = {executor.submit(single_trial, i, X, T, theta, algo): i for i in range(n_trials)}
+        futures = {executor.submit(single_trial, i, X, T, theta, opt_arm, algo): i for i in range(n_trials)}
 
         results = []
         for future in concurrent.futures.as_completed(futures):
@@ -48,6 +49,17 @@ def run_trials_in_parallel(n_trials, X, T, theta, algo, n_workers=None):
                 print(f"Trial {trial_id} completed successfully.")
 
     return results
+
+
+def compute_gap(X, theta):
+    vals = X @ theta
+    opt_arm = np.argmax(vals)
+    print(f'optimal arm: {opt_arm}')
+    vals = np.sort(vals)
+    gap = vals[-1] - vals[-2]
+    print(f"Gap: {gap}")
+    return gap, opt_arm
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run experiments in parallel")
@@ -75,7 +87,9 @@ if __name__ == "__main__":
         theta = np.zeros(d)
         theta[0] = 2.0
 
-        results = run_trials_in_parallel(n_trials, X, T, theta, algo, 6)
+        gap, opt_arm = compute_gap(X, theta)
+
+        results = run_trials_in_parallel(n_trials, X, T, theta, opt_arm, algo, 6)
         results_total[i] = np.array(results)
 
     np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_budget.npz', results=results_total, Ts=Ts)
