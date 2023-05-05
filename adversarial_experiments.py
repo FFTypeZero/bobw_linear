@@ -74,8 +74,8 @@ if __name__ == '__main__':
     omega = 0.2
     T = 30000
     move_gap = 200
-    # osci_mags = [0, 0.5, 1.0, 2.0, 4.0, 8.0]
-    osci_mags = [0]
+    osci_mags = [0, 0.5, 1.0, 2.0, 4.0, 8.0]
+    # osci_mags = [1.0]
 
     X = np.eye(d)
     x_extra = np.zeros(d)
