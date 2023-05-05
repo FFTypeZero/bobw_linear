@@ -74,7 +74,7 @@ if __name__ == "__main__":
     d = 10
     n_trials = 5000
     omega = 0.1
-    Ts = np.array([10 + 3000 * i for i in range(11)])
+    Ts = np.array([10 + 1000 * i for i in range(11)])
     # T = 30000
     results_total = np.zeros((len(Ts), n_trials))
 
@@ -92,5 +92,5 @@ if __name__ == "__main__":
         results = run_trials_in_parallel(n_trials, X, T, theta, opt_arm, algo, 6)
         results_total[i] = np.array(results)
 
-    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_budget.npz', results=results_total, Ts=Ts)
+    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_budget2.npz', results=results_total, Ts=Ts)
     print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
