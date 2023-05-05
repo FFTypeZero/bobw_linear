@@ -74,7 +74,8 @@ if __name__ == '__main__':
     omega = 0.2
     T = 30000
     move_gap = 200
-    osci_mags = [0.5, 1.0, 2.0, 4.0, 8.0]
+    # osci_mags = [0, 0.5, 1.0, 2.0, 4.0, 8.0]
+    osci_mags = [0]
 
     X = np.eye(d)
     x_extra = np.zeros(d)
@@ -102,4 +103,4 @@ if __name__ == '__main__':
         results_total[i] = results
 
     print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
-    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv3.npz', results=results_total)
+    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv4.npz', results=results_total)

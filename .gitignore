@@ -493,3 +493,4 @@ vignettes/*.pdf
 .vscode/
 *.DESKTOP-T775K6F
 *.npz
+plot_func.py
