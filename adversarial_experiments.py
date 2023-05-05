@@ -103,4 +103,4 @@ if __name__ == '__main__':
         results_total[i] = results
 
     print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
-    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv4.npz', results=results_total)
+    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv3.npz', results=results_total)
