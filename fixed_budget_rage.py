@@ -79,11 +79,17 @@ class RAGE(BAI_Base):
             # print("epoch = {}, allocation_i = {}".format(epoch + 1, allocation_i))
             covariance = np.zeros((self.d, self.d))
             target = np.zeros(self.d)
-            for j, num in enumerate(allocation_i):
-                for _ in range(num):
-                    covariance += np.outer(self.X[j], self.X[j])
-                    target += self.X[j] * self.reward_func(self.X[j], t)
-                    t += 1
+            samples = np.concatenate([np.repeat(j, allocation_i[j]) for j in range(len(allocation_i))])
+            samples = np.random.permutation(samples)
+            for j in samples:
+                covariance += np.outer(self.X[j], self.X[j])
+                target += self.X[j] * self.reward_func(self.X[j], t)
+                t += 1
+            # for j, num in enumerate(allocation_i):
+            #     for _ in range(num):
+            #         covariance += np.outer(self.X[j], self.X[j])
+            #         target += self.X[j] * self.reward_func(self.X[j], t)
+            #         t += 1
             theta_hat_i = np.linalg.pinv(covariance) @ target
 
             # Eliminate arms
