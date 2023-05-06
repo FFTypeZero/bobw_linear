@@ -70,14 +70,14 @@ if __name__ == '__main__':
     algo = args.algorithm
 
     d = 10
-    n_trials = 20
+    n_trials = 5000
     omega = 0.3
     T = 30000
     move_gap1 = 200
     move_gap2 = 300
     damping_length = T
-    osci_mags = [0, 0.5, 1.0, 2.0, 4.0, 8.0]
-    # osci_mags = [0.0]
+    osci_mags = [0, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0]
+    # osci_mags = [2.0]
 
     X = np.eye(d)
     x_extra = np.zeros(d)
@@ -97,7 +97,7 @@ if __name__ == '__main__':
         # thetas[:, 0] = 0.5 * np.exp(-ts / damping_length) * np.sin(ts / move_gap1) + 2.0
         thetas[:, 0] = 2.0
         # thetas[:, -1] = osci_mag * np.exp(-ts / damping_length) * np.cos(ts * np.pi / move_gap2) + 1.95
-        thetas[:, -1] = osci_mag * np.cos(2 * ts * np.pi / move_gap2) + 2.05
+        thetas[:, -1] = osci_mag * np.sin(2 * ts * np.pi / move_gap2) + 2.05
         # thetas[:int(T/3), :] = theta1
         # thetas[int(T/3)+1:, :] = theta2
 
@@ -107,4 +107,4 @@ if __name__ == '__main__':
         results_total[i] = results
 
     print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
-    # np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv4.npz', results=results_total)
+    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv4.npz', results=results_total)
