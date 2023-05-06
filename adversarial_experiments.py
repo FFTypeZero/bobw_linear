@@ -105,6 +105,6 @@ if __name__ == '__main__':
 
         results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
         results_total[i] = results
+        np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv4.npz', results=results_total)
 
     print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
-    np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv4.npz', results=results_total)
