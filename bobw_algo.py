@@ -19,8 +19,15 @@ class P1_Linear(BAI_Base):
         super().__init__(X, T, reward_func)
 
     def __fw_XXi(self, X, X_i):
-        Y_i = X_i[:, np.newaxis, :] - X_i[np.newaxis, :, :]
-        Y_i = np.reshape(Y_i, (-1, self.d))
+        N_i = X_i.shape[0]
+        if N_i == 1:
+            return np.ones(self.n) / self.n, 0
+
+        Y_i_temp = X_i[:, np.newaxis, :] - X_i[np.newaxis, :, :]
+        Y_i_all = np.reshape(Y_i_temp, (-1, self.d))
+        rows, cols = np.triu_indices(N_i, k=1)
+        idx_i = np.ravel_multi_index((rows, cols), (N_i, N_i))
+        Y_i = Y_i_all[idx_i]
         design_i, rho_i = fw_XY(X, Y_i)
         return design_i, rho_i
 
@@ -141,10 +148,10 @@ class P1_Linear(BAI_Base):
         return self.X[recommendation]
 
 if __name__ == '__main__':
-    omega = 0.01
+    omega = 0.1
     d = 10
     T = 30000
-    num_trials = 2000
+    num_trials = 20
 
     X = np.eye(d)
     x_extra = np.zeros(d)
