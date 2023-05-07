@@ -105,11 +105,12 @@ if __name__ == "__main__":
     T = 10000
 
     # Ds = [3, 4, 5, 6]
-    Ds = [3]
+    Ds = [4]
 
-    n_trials = 50
+    n_trials = 1000
     results_total = [np.zeros((len(Ds), n_trials)), np.zeros((len(Ds), n_trials)), np.zeros((len(Ds), n_trials))]
     algos = ['G_design', 'RAGE', 'BOBW']
+    np.random.seed(6)
 
     for i, D in enumerate(Ds):
         # X, thetas = get_sto_instance_1(d, T, omega)
