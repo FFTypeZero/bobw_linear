@@ -90,8 +90,8 @@ if __name__ == '__main__':
     d = 10
     omega = 0.3
     T = 70000
-    osci_mags = [0, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
-    # osci_mags = [24.0]
+    # osci_mags = [0, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
+    osci_mags = [24.0]
     damped = False
     D = 4
 
@@ -108,10 +108,10 @@ if __name__ == '__main__':
 
         gap, opt_arm = compute_gap(X, thetas)
 
-        for j, algo in enumerate(algos):
-            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
-            results_total[j][i] = np.array(results)
-            np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv5.npz', results=results_total[j], osci_mags=osci_mags)
+        # for j, algo in enumerate(algos):
+            # results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
+            # results_total[j][i] = np.array(results)
+            # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv5.npz', results=results_total[j], osci_mags=osci_mags)
         # np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv4.npz', results=results_total)
 
     for j, algo in enumerate(algos):
