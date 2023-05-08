@@ -84,7 +84,7 @@ def get_sto_instance_2(D, T, num_sparse=None):
             continue
         else:
             break
-    
+
     thetas = np.zeros((T, num_features))
     thetas[:] = theta_star.reshape(-1)
 
@@ -102,12 +102,12 @@ if __name__ == "__main__":
     d = 10
     omega = 0.1
     # Ts = np.array([10 + 1000 * i for i in range(11)])
-    T = 10000
+    T = 80000
 
     # Ds = [3, 4, 5, 6]
     Ds = [4]
 
-    n_trials = 1000
+    n_trials = 1500
     results_total = [np.zeros((len(Ds), n_trials)), np.zeros((len(Ds), n_trials)), np.zeros((len(Ds), n_trials))]
     algos = ['G_design', 'RAGE', 'BOBW']
     np.random.seed(6)

@@ -51,6 +51,8 @@ def run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, n_workers=None
 
 
 def compute_gap(X, thetas):
+    n, d = X.shape
+    thetas = thetas.reshape(-1, d)
     vals = X @ thetas.T
     ave_vals = np.mean(vals, axis=1)
     opt_arm = np.argmax(ave_vals)
