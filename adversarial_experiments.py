@@ -85,20 +85,20 @@ if __name__ == '__main__':
                         help="BAI algorithm to run (default: G_design)")
     args = parser.parse_args()
 
-    # algo = args.algorithm
+    algo = args.algorithm
 
     d = 10
     omega = 0.3
     T = 70000
-    # osci_mags = [0, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
-    osci_mags = [24.0]
+    osci_mags = [0, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
+    # osci_mags = [24.0]
     damped = False
     D = 4
 
     n_trials = 2000
-    # results_total = np.zeros((len(osci_mags), n_trials))
-    results_total = [np.zeros((len(osci_mags), n_trials)), np.zeros((len(osci_mags), n_trials)), np.zeros((len(osci_mags), n_trials))]
-    algos = ['G_design', 'RAGE', 'BOBW']
+    results_total = np.zeros((len(osci_mags), n_trials))
+    # results_total = [np.zeros((len(osci_mags), n_trials)), np.zeros((len(osci_mags), n_trials)), np.zeros((len(osci_mags), n_trials))]
+    # algos = ['G_design', 'RAGE', 'BOBW']
     np.random.seed(6)
     X, theta_stars = get_sto_instance_2(D, T)
 
@@ -112,8 +112,10 @@ if __name__ == '__main__':
             # results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
             # results_total[j][i] = np.array(results)
             # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv5.npz', results=results_total[j], osci_mags=osci_mags)
-        # np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv4.npz', results=results_total)
+        results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
+        results_total[i] = np.array(results)
+        # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv5.npz', results=results_total, osci_mags=osci_mags)
 
-    for j, algo in enumerate(algos):
-        print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
-    # print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
+    # for j, algo in enumerate(algos):
+        # print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
+    print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
