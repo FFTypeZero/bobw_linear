@@ -5,10 +5,10 @@ from fixed_budget_rage import RAGE
 from bobw_algo import P1_Linear
 
 
-def single_trial(trial_id, X, T, thetas, opt_arm, algo):
+def single_trial(trial_id, X, T, thetas, opt_arm, algo, noise_level=1.0):
     print(f"Trial {trial_id} started.")
     
-    reward_func = lambda x, t: np.random.normal(x@thetas[t], 1)
+    reward_func = lambda x, t: np.random.normal(x@thetas[t], noise_level)
     if algo == 'G_design':
         recommendation = BAI_G_Design(X, T, reward_func).run()
     elif algo == 'RAGE':
@@ -29,12 +29,12 @@ def single_trial(trial_id, X, T, thetas, opt_arm, algo):
     return result
 
 
-def run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, n_workers=None):
+def run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level=1.0, n_workers=None):
     if n_workers is None:
         n_workers = min(n_trials, 4) 
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
-        futures = {executor.submit(single_trial, i, X, T, thetas, opt_arm, algo): i for i in range(n_trials)}
+        futures = {executor.submit(single_trial, i, X, T, thetas, opt_arm, algo, noise_level): i for i in range(n_trials)}
 
         results = []
         for future in concurrent.futures.as_completed(futures):

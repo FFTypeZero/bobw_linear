@@ -87,6 +87,7 @@ if __name__ == '__main__':
     d = 10
     omega = 0.5
     T = 10000
+    noise_level = 0.5
     # osci_mags = [2.0 * i for i in range(11)]
     osci_mag = 1.0
     move_gaps = [400 + 400 * i for i in range(1, 10)]
@@ -110,7 +111,7 @@ if __name__ == '__main__':
         gap, opt_arm = compute_gap(X, thetas)
 
         for j, algo in enumerate(algos):
-            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
+            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
             np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv7.npz', results=results_total[j], move_gaps=move_gaps)
         # results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)

@@ -101,13 +101,14 @@ if __name__ == "__main__":
     # ds = [8, 9, 10, 11, 12, 13]
     d = 10
     omega = 0.1
+    noise_level = 0.3
     # Ts = np.array([10 + 1000 * i for i in range(11)])
-    T = 80000
+    T = 10000
 
     # Ds = [3, 4, 5, 6]
     Ds = [4]
 
-    n_trials = 1500
+    n_trials = 20
     results_total = [np.zeros((len(Ds), n_trials)), np.zeros((len(Ds), n_trials)), np.zeros((len(Ds), n_trials))]
     algos = ['G_design', 'RAGE', 'BOBW']
     np.random.seed(6)
@@ -115,11 +116,10 @@ if __name__ == "__main__":
     for i, D in enumerate(Ds):
         # X, thetas = get_sto_instance_1(d, T, omega)
         X, thetas = get_sto_instance_2(D, T)
-
         gap, opt_arm = compute_gap(X, thetas)
 
         for j, algo in enumerate(algos):
-            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
+            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
             # np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_budget2.npz', results=results_total[j], Ts=Ts)
         # np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_budget2.npz', results=results_total, Ts=Ts)
