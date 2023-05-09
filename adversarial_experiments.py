@@ -26,13 +26,10 @@ def get_adv_instance_1(d, T, omega):
 
     return X, thetas
 
-def get_adv_instance_2(d, T, omega, osci_mag):
+def get_adv_instance_2(d, T, omega, osci_mag, move_gap):
     """
     Soare et al. (2014) example with oscillating arm
     """
-    move_gap1 = 200
-    move_gap2 = 300
-    damping_length = T
 
     X = np.eye(d)
     x_extra = np.zeros(d)
@@ -43,9 +40,9 @@ def get_adv_instance_2(d, T, omega, osci_mag):
     ts = np.arange(T)
     thetas = np.zeros((T, d))
     # thetas[:, 0] = 0.5 * np.exp(-ts / damping_length) * np.sin(ts / move_gap1) + 2.0
-    thetas[:, 0] = 2.0
+    thetas[:, 0] = 0.3
     # thetas[:, -1] = osci_mag * np.exp(-ts / damping_length) * np.cos(ts * np.pi / move_gap2) + 1.95
-    thetas[:, -1] = osci_mag * np.sin(2 * ts * np.pi / move_gap2) + 2.25
+    thetas[:, -1] = - osci_mag * np.sin(2 * ts * np.pi / move_gap) + 0.5
 
     return X, thetas
 
@@ -90,20 +87,24 @@ if __name__ == '__main__':
     d = 10
     omega = 0.5
     T = 10000
-    osci_mags = [2.0 * i for i in range(11)]
-    # osci_mags = [2.0]
+    # osci_mags = [2.0 * i for i in range(11)]
+    osci_mag = 1.0
+    move_gaps = [400 + 400 * i for i in range(1, 10)]
+    # move_gaps = [2400]
+    num_settings = len(move_gaps)
+
     damped = False
     D = 4
 
     n_trials = 1000
     # results_total = np.zeros((len(osci_mags), n_trials))
-    results_total = [np.zeros((len(osci_mags), n_trials)), np.zeros((len(osci_mags), n_trials)), np.zeros((len(osci_mags), n_trials))]
+    results_total = [np.zeros((num_settings, n_trials)), np.zeros((num_settings, n_trials)), np.zeros((num_settings, n_trials))]
     algos = ['G_design', 'RAGE', 'BOBW']
     np.random.seed(6)
-    X, theta_stars = get_sto_instance_2(D, T)
+    # X, theta_stars = get_sto_instance_2(D, T)
 
-    for i, osci_mag in enumerate(osci_mags):
-        X, thetas = get_adv_instance_2(d, T, omega, osci_mag)
+    for i, move_gap in enumerate(move_gaps):
+        X, thetas = get_adv_instance_2(d, T, omega, osci_mag, move_gap)
         # thetas = add_perturbation_3(X, theta_stars, osci_mag, damped)
 
         gap, opt_arm = compute_gap(X, thetas)
@@ -111,7 +112,7 @@ if __name__ == '__main__':
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
             results_total[j][i] = np.array(results)
-            np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv6.npz', results=results_total[j], osci_mags=osci_mags)
+            np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv7.npz', results=results_total[j], osci_mags=osci_mags)
         # results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
         # results_total[i] = np.array(results)
         # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv5.npz', results=results_total, osci_mags=osci_mags)
