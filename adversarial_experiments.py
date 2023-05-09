@@ -45,7 +45,7 @@ def get_adv_instance_2(d, T, omega, osci_mag):
     # thetas[:, 0] = 0.5 * np.exp(-ts / damping_length) * np.sin(ts / move_gap1) + 2.0
     thetas[:, 0] = 2.0
     # thetas[:, -1] = osci_mag * np.exp(-ts / damping_length) * np.cos(ts * np.pi / move_gap2) + 1.95
-    thetas[:, -1] = osci_mag * np.sin(2 * ts * np.pi / move_gap2) + 2.05
+    thetas[:, -1] = osci_mag * np.sin(2 * ts * np.pi / move_gap2) + 2.25
 
     return X, thetas
 
@@ -88,34 +88,34 @@ if __name__ == '__main__':
     algo = args.algorithm
 
     d = 10
-    omega = 0.3
-    T = 70000
-    osci_mags = [0, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
-    # osci_mags = [24.0]
+    omega = 0.5
+    T = 10000
+    osci_mags = [2.0 * i for i in range(11)]
+    # osci_mags = [2.0]
     damped = False
     D = 4
 
-    n_trials = 2000
-    results_total = np.zeros((len(osci_mags), n_trials))
-    # results_total = [np.zeros((len(osci_mags), n_trials)), np.zeros((len(osci_mags), n_trials)), np.zeros((len(osci_mags), n_trials))]
-    # algos = ['G_design', 'RAGE', 'BOBW']
+    n_trials = 1000
+    # results_total = np.zeros((len(osci_mags), n_trials))
+    results_total = [np.zeros((len(osci_mags), n_trials)), np.zeros((len(osci_mags), n_trials)), np.zeros((len(osci_mags), n_trials))]
+    algos = ['G_design', 'RAGE', 'BOBW']
     np.random.seed(6)
     X, theta_stars = get_sto_instance_2(D, T)
 
     for i, osci_mag in enumerate(osci_mags):
-        # X, thetas = get_adv_instance_2(d, T, omega, osci_mag)
-        thetas = add_perturbation_3(X, theta_stars, osci_mag, damped)
+        X, thetas = get_adv_instance_2(d, T, omega, osci_mag)
+        # thetas = add_perturbation_3(X, theta_stars, osci_mag, damped)
 
         gap, opt_arm = compute_gap(X, thetas)
 
-        # for j, algo in enumerate(algos):
-            # results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
-            # results_total[j][i] = np.array(results)
-            # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv5.npz', results=results_total[j], osci_mags=osci_mags)
-        results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
-        results_total[i] = np.array(results)
-        np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv5.npz', results=results_total, osci_mags=osci_mags)
+        for j, algo in enumerate(algos):
+            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
+            results_total[j][i] = np.array(results)
+            np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_adv6.npz', results=results_total[j], osci_mags=osci_mags)
+        # results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
+        # results_total[i] = np.array(results)
+        # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv5.npz', results=results_total, osci_mags=osci_mags)
 
-    # for j, algo in enumerate(algos):
-        # print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
-    print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
+    for j, algo in enumerate(algos):
+        print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
+    # print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
