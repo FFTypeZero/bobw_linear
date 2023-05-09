@@ -88,8 +88,8 @@ if __name__ == '__main__':
     omega = 0.5
     T = 10000
     noise_level = 0.3
-    # osci_mags = [2.0 * i for i in range(11)]
-    osci_mags = [1.0]
+    osci_mags = [1.0 * i for i in range(9)]
+    # osci_mags = [6.0]
     move_gaps = [400 + 400 * i for i in range(1, 10)]
     # move_gaps = [2400]
     num_settings = len(osci_mags)
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     damped = False
     D = 4
 
-    n_trials = 20
+    n_trials = 1000
     # results_total = np.zeros((len(osci_mags), n_trials))
     results_total = [np.zeros((num_settings, n_trials)), np.zeros((num_settings, n_trials)), np.zeros((num_settings, n_trials))]
     algos = ['G_design', 'RAGE', 'BOBW']
@@ -113,7 +113,7 @@ if __name__ == '__main__':
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
-            # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv8.npz', results=results_total[j], osci_mags=osci_mags)
+            np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv8.npz', results=results_total[j], osci_mags=osci_mags)
         # results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, 6)
         # results_total[i] = np.array(results)
         # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_adv5.npz', results=results_total, osci_mags=osci_mags)
