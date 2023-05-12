@@ -29,7 +29,7 @@ class BAI_G_Design(BAI_Base):
             theta_hat_s = np.linalg.solve(self.Sigma, self.X[i_t] * r_t)
             theta_hat_t = (theta_hat_t * t + theta_hat_s) / (t + 1)
             if t % 5000 == 0:
-                print("BAI_G_Design: t = {}".format(t))
+                print("G-BAI: t = {}".format(t))
         recommendation = np.argmax(self.X@theta_hat_t)
         return self.X[recommendation]
 
@@ -56,5 +56,5 @@ if __name__ == '__main__':
             num_correct += 1
         else:
             print("incorrect! recommendation = {}".format(recommendation))
-        print("G_design current accuracy = {}".format(num_correct / (_ + 1)))
-    print("G_design accuracy = {}".format(num_correct / num_trials))
+        print("G-BAI current accuracy = {}".format(num_correct / (_ + 1)))
+    print("B-BAI accuracy = {}".format(num_correct / num_trials))

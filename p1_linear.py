@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from bai_algo_base import BAI_Base
+from g_bai import BAI_Base
 from fw import fw_XY
 
 
@@ -31,7 +31,7 @@ class P1_Linear(BAI_Base):
         design_i, rho_i = fw_XY(X, Y_i)
         return design_i, rho_i
 
-    def subroutine(self, theta_hat):
+    def rage_elimination(self, theta_hat):
         # Sort arms based on theta_hat
         y_hat = self.X@theta_hat
         sorted_idx = np.flip(np.argsort(y_hat))
@@ -51,7 +51,7 @@ class P1_Linear(BAI_Base):
             n_i = X_i.shape[0] - 1
 
         design_out = design_bar / (2 * i_count) + self.G_design / 2
-        print("P1_Linear: subroutine rounds = {}".format(i_count))
+        print("P1_Linear: RAGE_Elimination rounds = {}".format(i_count))
         return design_out
 
     def __eliminate_Xi(self, threshold, X_i):
@@ -85,7 +85,7 @@ class P1_Linear(BAI_Base):
                 lower_bound = mid
         return X_i[:lower_bound, :]
 
-    def alt_subroutine(self, theta_hat):
+    def peace_elimination(self, theta_hat):
         # Sort arms based on theta_hat
         y_hat = self.X@theta_hat
         sorted_idx = np.flip(np.argsort(y_hat))
@@ -116,7 +116,7 @@ class P1_Linear(BAI_Base):
             n_i = X_i.shape[0]
 
         design_out = design_bar / (2 * i_count) + self.G_design / 2
-        print("P1_Linear: alt_subroutine rounds = {}".format(i_count))
+        print("P1_Linear: Peace_Elimination rounds = {}".format(i_count))
         return design_out
 
     def run(self):
@@ -139,11 +139,11 @@ class P1_Linear(BAI_Base):
             if self.batch and t % epoch_length != 0:
                 continue
             if self.alt:
-                print(f"P1_Linear: starts round {t} alt_subroutine.")
-                design_t = self.alt_subroutine(theta_hat_t)
+                print(f"P1_Linear: starts round {t} Peace_Elimination.")
+                design_t = self.peace_elimination(theta_hat_t)
             else:
-                print(f"P1_Linear: starts round {t} subroutine.")
-                design_t = self.subroutine(theta_hat_t)
+                print(f"P1_Linear: starts round {t} RAGE_Elimination.")
+                design_t = self.rage_elimination(theta_hat_t)
         recommendation = np.argmax(self.X@theta_hat_t)
         return self.X[recommendation]
 
@@ -170,5 +170,5 @@ if __name__ == '__main__':
             num_correct += 1
         else:
             print("incorrect! recommendation = {}".format(recommendation))
-        print("BOBW current accuracy = {}".format(num_correct / (_ + 1)))
-    print("BOBW accuracy = {}".format(num_correct / num_trials))
+        print("P1-Linear current accuracy = {}".format(num_correct / (_ + 1)))
+    print("P1-Linear accuracy = {}".format(num_correct / num_trials))

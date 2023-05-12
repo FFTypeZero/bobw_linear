@@ -98,9 +98,8 @@ if __name__ == '__main__':
     D = 4
 
     n_trials = 1000
-    # results_total = np.zeros((len(osci_mags), n_trials))
-    results_total = [np.zeros((num_settings, n_trials)), np.zeros((num_settings, n_trials)), np.zeros((num_settings, n_trials))]
     algos = ['G_design', 'RAGE', 'BOBW']
+    results_total = np.zeros((len(algos), len(num_settings), n_trials))
     np.random.seed(6)
     X, theta_stars = get_sto_instance_2(D, T)
 

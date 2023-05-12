@@ -1,27 +1,26 @@
 import numpy as np
 import concurrent.futures
-from bai_algo_base import BAI_G_Design
-from fixed_budget_rage import RAGE
-from bobw_algo import P1_Linear
+from g_bai import BAI_G_Design
+from peace import Peace
+from p1_linear import P1_Linear
 
 
 def single_trial(trial_id, X, T, thetas, opt_arm, algo, noise_level=1.0):
     print(f"Trial {trial_id} started.")
     
     reward_func = lambda x, t: np.random.normal(x@thetas[t], noise_level)
-    if algo == 'G_design':
+    if algo == 'G-BAI':
         recommendation = BAI_G_Design(X, T, reward_func).run()
-    elif algo == 'RAGE':
-        recommendation = RAGE(X, T, reward_func).run()
-    elif algo == 'Modified_RAGE':
-        recommendation = RAGE(X, T, reward_func, bobw=True).run()
-    elif algo == 'BOBW':
-        recommendation = P1_Linear(X, T, reward_func, batch=True, alt=True, subroutine_max_iter=15).run()
+    elif algo == 'Peace':
+        recommendation = Peace(X, T, reward_func).run()
+    elif algo == 'P1-RAGE':
+        recommendation = P1_Linear(X, T, reward_func, batch=True, alt=False, subroutine_max_iter=15).run()
+    elif algo == 'P1-Peace':
+        recommendation = P1_Linear(X, T, reward_func, batch=True, alt=True).run()
     else:
         raise ValueError("Unknown algo: {}".format(algo))
     if np.all(recommendation == X[opt_arm]):
         result = 1
-        # print("correct! recommendation = {}".format(recommendation))
     else:
         result = 0
         print("incorrect! recommendation = {}".format(recommendation))

@@ -1,9 +1,9 @@
 import numpy as np
-from bai_algo_base import BAI_Base
+from g_bai import BAI_Base
 from fw import fw_XY
 
 
-class RAGE(BAI_Base):
+class Peace(BAI_Base):
     def __init__(self, X, T, reward_func, bobw=False, reg=.1) -> None:
         self.reg = reg
         self.bobw = bobw
@@ -64,18 +64,18 @@ class RAGE(BAI_Base):
 
     def sto_run(self):
         """
-        Fixed budget RAGE for stochastic environment
+        Peace for stochastic environment
         """
         rho_start = self.__fw_XXi(self.X, self.X)[1]
         num_epoches = int(np.ceil(np.log2(rho_start)))
         epoch_length = int(np.floor(self.T / num_epoches))
-        print("RAGE: num_epoches = {}, epoch_length = {}".format(num_epoches, epoch_length))
+        print("Peace: num_epoches = {}, epoch_length = {}".format(num_epoches, epoch_length))
 
         X_i = self.X
         t = 0
         for epoch in range(num_epoches):
             # Compute design and allocation
-            print("RAGE: Epoch {}/{}".format(epoch + 1, num_epoches))
+            print("Peace: Epoch {}/{}".format(epoch + 1, num_epoches))
             design_i, rho_i = self.__fw_XXi(self.X, X_i)
             if epoch < num_epoches - 1:
                 allocation_i = self.__rounding(design_i, epoch_length)
@@ -107,19 +107,19 @@ class RAGE(BAI_Base):
 
     def bobw_run(self):
         """
-        Modified RAGE for both stochastic and adversarial environments
+        Modified Peace for both stochastic and adversarial environments
         """
         rho_start = self.__fw_XXi(self.X, self.X)[1]
         num_epoches = int(np.ceil(np.log2(rho_start)))
         epoch_length = int(np.floor(self.T / num_epoches))
-        print("Modified RAGE: num_epoches = {}, epoch_length = {}".format(num_epoches, epoch_length))
+        print("Modified Peace: num_epoches = {}, epoch_length = {}".format(num_epoches, epoch_length))
 
         X_i = self.X
         theta_hat_t = np.zeros(self.d)
         t = 0
         for epoch in range(num_epoches):
             # Compute design and mix it with G_design
-            print("Modified RAGE: Epoch {}/{}".format(epoch + 1, num_epoches))
+            print("Modified Peace: Epoch {}/{}".format(epoch + 1, num_epoches))
             sto_design_i, rho_i = self.__fw_XXi(self.X, X_i)
             design_i = (sto_design_i + self.G_design) / 2
 
@@ -169,10 +169,10 @@ if __name__ == '__main__':
     num_correct = 0
     for _ in range(num_trials):
         print("Trial {}/{}".format(_ + 1, num_trials))
-        recommendation = RAGE(X, T, reward_func, bobw=False).run()
+        recommendation = Peace(X, T, reward_func, bobw=False).run()
         if np.all(recommendation == X[0]):
             num_correct += 1
         else:
             print("incorrect! recommendation = {}".format(recommendation))
-        print("RAGE current accuracy = {}".format(num_correct / (_ + 1)))
-    print("RAGE accuracy = {}".format(num_correct / num_trials))
+        print("Peace current accuracy = {}".format(num_correct / (_ + 1)))
+    print("Peace accuracy = {}".format(num_correct / num_trials))

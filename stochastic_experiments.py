@@ -98,19 +98,17 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # algo = args.algorithm
-    # ds = [8, 9, 10, 11, 12, 13]
     d = 10
     omega = 0.1
     noise_level = 0.3
     # Ts = np.array([10 + 1000 * i for i in range(11)])
     T = 10000
 
-    # Ds = [3, 4, 5, 6]
     Ds = [4]
 
     n_trials = 20
-    results_total = [np.zeros((len(Ds), n_trials)), np.zeros((len(Ds), n_trials)), np.zeros((len(Ds), n_trials))]
-    algos = ['G_design', 'RAGE', 'BOBW']
+    algos = ['G_design', 'Peace', 'P1-Peace']
+    results_total = np.zeros((len(algos), len(Ds), n_trials))
     np.random.seed(6)
 
     for i, D in enumerate(Ds):
@@ -122,8 +120,6 @@ if __name__ == "__main__":
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
             # np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_budget2.npz', results=results_total[j], Ts=Ts)
-        # np.savez_compressed(f'plot_data/{algo}/{algo}_results_omega{omega}_budget2.npz', results=results_total, Ts=Ts)
 
     for j, algo in enumerate(algos):
         print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
-    # print(f"{algo} Accuracy: {np.mean(results_total, axis=1)}")
