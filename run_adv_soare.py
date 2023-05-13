@@ -3,57 +3,29 @@ import matplotlib.pyplot as plt
 from utils import run_trials_in_parallel, compute_gap
 
 
-def get_adv_Soare_1(d, T, omega, osci_mag, move_gap=200):
-    """
-    Soare et al. (2014) example with oscillating arm
-    """
+# def get_adv_Soare_1(d, T, omega, osci_mag, move_gap):
+#     """
+#     Soare et al. (2014) example with oscillating arm
+#     """
 
-    X = np.eye(d)
-    x_extra = np.zeros(d)
-    x_extra[0] = np.cos(omega)
-    x_extra[1] = np.sin(omega)
-    X = np.vstack((X, x_extra))
+#     X = np.eye(d)
+#     x_extra = np.zeros(d)
+#     x_extra[0] = np.cos(omega)
+#     x_extra[1] = np.sin(omega)
+#     X = np.vstack((X, x_extra))
 
-    ts = np.arange(T)
-    thetas = np.zeros((T, d))
-    thetas[:, 0] = 2.0
-    thetas[:, -1] = osci_mag * np.sin(2 * ts * np.pi / move_gap) + 2.25
+#     ts = np.arange(T)
+#     thetas = np.zeros((T, d))
+#     thetas[:, 0] = 2.0
+#     thetas[:, -1] = osci_mag * np.sin(2 * ts * np.pi / move_gap) + 2.25
 
-    gap, opt_arm = compute_gap(X, thetas)
-    assert opt_arm == d - 1
+#     gap, opt_arm = compute_gap(X, thetas)
+#     assert opt_arm == d - 1
 
-    return X, thetas
-
-
-def run_change_osci(algos, n_trials=1000):
-    d = 10
-    omega = 0.5
-    T = 10000
-    noise_level = 1.0
-    osci_mags = [2.0 * i for i in range(9)]
-    min_gaps = np.zeros(len(osci_mags))
-
-    results_total = np.zeros((len(algos), len(osci_mags), n_trials))
-    np.random.seed(6)
-
-    for i, osci_mag in enumerate(osci_mags):
-        X, thetas = get_adv_Soare_1(d, T, omega, osci_mag)
-
-        gap, opt_arm = compute_gap(X, thetas)
-        min_gaps[i] = gap
-
-        for j, algo in enumerate(algos):
-            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
-            results_total[j][i] = np.array(results)
-            np.savez_compressed(f'plot_data/{algo}/{algo}_results_soare_osci.npz', 
-                                results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
-
-    # for j, algo in enumerate(algos):
-        # print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
-    return results_total, min_gaps
+#     return X, thetas
 
 
-def get_adv_Soare_2(d, T, omega, move_gap, osci_mag=2.0):
+def get_adv_Soare(d, T, omega, osci_mag, move_gap):
     """
     Soare et al. (2014) example with oscillating arm
     """
@@ -74,19 +46,50 @@ def get_adv_Soare_2(d, T, omega, move_gap, osci_mag=2.0):
 
     return X, thetas
 
+
+def run_change_osci(algos, n_trials=1000):
+    d = 10
+    omega = 0.5
+    T = 10000
+    noise_level = 1.0
+    move_gap = 200
+    osci_mags = [1.0 * i for i in range(10)]
+    min_gaps = np.zeros(len(osci_mags))
+
+    results_total = np.zeros((len(algos), len(osci_mags), n_trials))
+    np.random.seed(6)
+
+    for i, osci_mag in enumerate(osci_mags):
+        X, thetas = get_adv_Soare(d, T, omega, osci_mag, move_gap)
+
+        gap, opt_arm = compute_gap(X, thetas)
+        min_gaps[i] = gap
+
+        for j, algo in enumerate(algos):
+            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
+            results_total[j][i] = np.array(results)
+            np.savez_compressed(f'plot_data/{algo}/{algo}_results_soare_osci.npz', 
+                                results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
+
+    # for j, algo in enumerate(algos):
+        # print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
+    return results_total, min_gaps
+
+
 def run_change_period(algos, n_trials=1000):
     d = 10
     omega = 0.5
     T = 10000
     noise_level = 1.0
-    move_gaps = [400 + 400 * i for i in range(1, 10)]
+    osci_mag = 2.5
+    move_gaps = [300 + 300 * i for i in range(10)]
     min_gaps = np.zeros(len(move_gaps))
 
     results_total = np.zeros((len(algos), len(move_gaps), n_trials))
     np.random.seed(6)
 
     for i, move_gap in enumerate(move_gaps):
-        X, thetas = get_adv_Soare_2(d, T, omega, move_gap)
+        X, thetas = get_adv_Soare(d, T, omega, osci_mag, move_gap)
 
         gap, opt_arm = compute_gap(X, thetas)
         min_gaps[i] = gap

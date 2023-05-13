@@ -45,6 +45,7 @@ def get_adv_instance_2(d, T, omega, osci_mag, move_gap):
     thetas[:, -1] = - osci_mag * np.sin(2 * ts * np.pi / move_gap) + 0.5
 
     gap, opt_arm = compute_gap(X, thetas)
+    print(f"Current osci_mag: {osci_mag}, move_gap: {move_gap}")
     assert opt_arm == d - 1
 
     return X, thetas
@@ -104,12 +105,12 @@ if __name__ == '__main__':
     d = 10
     omega = 0.5
     T = 10000
-    noise_level = 0.3
-    osci_mags = [1.0 * i for i in range(10)]
-    # osci_mag = 2.0
-    # move_gaps = [300 + 300 * i for i in range(1, 10)]
-    move_gap = 300
-    num_settings = len(osci_mags)
+    noise_level = 1.0
+    # osci_mags = [1.0 * i for i in range(10)]
+    osci_mag = 2.5
+    move_gaps = [300 + 300 * i for i in range(10)]
+    # move_gap = 200
+    num_settings = len(move_gaps)
     min_gaps = np.zeros(num_settings)
 
     damped = False
@@ -117,13 +118,14 @@ if __name__ == '__main__':
 
     n_trials = 20
     algos = ['G-BAI', 'Peace', 'P1-Peace']
+    # algos = ['G-BAI']
     results_total = np.zeros((len(algos), num_settings, n_trials))
     np.random.seed(6)
-    X, theta_stars = get_sto_instance_2(D, T)
+    # X, theta_stars = get_sto_instance_2(D, T)
 
-    for i, osci_mag in enumerate(osci_mags):
-        # X, thetas = get_adv_instance_2(d, T, omega, osci_mag, move_gap)
-        thetas = add_perturbation_3(X, theta_stars, osci_mag, move_gap, damped)
+    for i, move_gap in enumerate(move_gaps):
+        X, thetas = get_adv_instance_2(d, T, omega, osci_mag, move_gap)
+        # thetas = add_perturbation_3(X, theta_stars, osci_mag, move_gap, damped)
 
         gap, opt_arm = compute_gap(X, thetas)
         min_gaps[i] = gap
