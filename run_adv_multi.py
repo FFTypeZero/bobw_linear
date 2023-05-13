@@ -128,8 +128,6 @@ def run_change_osci(algos, n_trials=1000):
             np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_osci.npz', 
                                 results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
 
-    # for j, algo in enumerate(algos):
-        # print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
     return results_total, min_gaps
 
 
@@ -158,8 +156,6 @@ def run_change_period(algos, n_trials=1000):
             np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_period.npz', 
                                 results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
 
-    # for j, algo in enumerate(algos):
-        # print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
     return results_total, min_gaps
 
 

@@ -3,28 +3,6 @@ import matplotlib.pyplot as plt
 from utils import run_trials_in_parallel, compute_gap
 
 
-# def get_adv_Soare_1(d, T, omega, osci_mag, move_gap):
-#     """
-#     Soare et al. (2014) example with oscillating arm
-#     """
-
-#     X = np.eye(d)
-#     x_extra = np.zeros(d)
-#     x_extra[0] = np.cos(omega)
-#     x_extra[1] = np.sin(omega)
-#     X = np.vstack((X, x_extra))
-
-#     ts = np.arange(T)
-#     thetas = np.zeros((T, d))
-#     thetas[:, 0] = 2.0
-#     thetas[:, -1] = osci_mag * np.sin(2 * ts * np.pi / move_gap) + 2.25
-
-#     gap, opt_arm = compute_gap(X, thetas)
-#     assert opt_arm == d - 1
-
-#     return X, thetas
-
-
 def get_adv_Soare(d, T, omega, osci_mag, move_gap):
     """
     Soare et al. (2014) example with oscillating arm
@@ -71,8 +49,6 @@ def run_change_osci(algos, n_trials=1000):
             np.savez_compressed(f'plot_data/{algo}/{algo}_results_soare_osci.npz', 
                                 results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
 
-    # for j, algo in enumerate(algos):
-        # print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
     return results_total, min_gaps
 
 
@@ -100,8 +76,6 @@ def run_change_period(algos, n_trials=1000):
             np.savez_compressed(f'plot_data/{algo}/{algo}_results_soare_period.npz', 
                                 results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
 
-    # for j, algo in enumerate(algos):
-        # print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
     return results_total, min_gaps
 
 
@@ -150,16 +124,16 @@ def get_plot():
 
 
 if __name__ == '__main__':
-    n_trials = 5
+    n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace']
 
-    # results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
-    # results_period, min_gaps_period = run_change_period(algos, n_trials)
-    # for j, algo in enumerate(algos):
-    #     print(f"{algo} Oscillation magnitude accuracy: {np.mean(results_osci[j], axis=1)}")
-    # print(f"Oscillation magnitude minimum gaps: {min_gaps_osci}")
-    # for j, algo in enumerate(algos):
-    #     print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
-    # print(f"Oscillation period minimum gaps: {min_gaps_period}")
+    results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
+    results_period, min_gaps_period = run_change_period(algos, n_trials)
+    for j, algo in enumerate(algos):
+        print(f"{algo} Oscillation magnitude accuracy: {np.mean(results_osci[j], axis=1)}")
+    print(f"Oscillation magnitude minimum gaps: {min_gaps_osci}")
+    for j, algo in enumerate(algos):
+        print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
+    print(f"Oscillation period minimum gaps: {min_gaps_period}")
 
     get_plot()
