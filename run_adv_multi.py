@@ -106,10 +106,10 @@ def add_perturbation_multi(X, theta_stars, osci_mag, move_gap):
 def run_change_osci(algos, n_trials=1000):
     T = 10000
     noise_level = 0.3
-    osci_mags = [1.0 * i for i in range(9)]
+    osci_mags = [1.0 * i for i in range(10)]
     min_gaps = np.zeros(len(osci_mags))
 
-    move_gap = 300
+    move_gap = 900
     D = 4
 
     results_total = np.zeros((len(algos), len(osci_mags), n_trials))
@@ -208,12 +208,12 @@ if __name__ == '__main__':
     algos = ['G-BAI', 'Peace', 'P1-Peace']
 
     results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
-    results_period, min_gaps_period = run_change_period(algos, n_trials)
+    # results_period, min_gaps_period = run_change_period(algos, n_trials)
     for j, algo in enumerate(algos):
         print(f"{algo} Oscillation magnitude accuracy: {np.mean(results_osci[j], axis=1)}")
     print(f"Oscillation magnitude minimum gaps: {min_gaps_osci}")
-    for j, algo in enumerate(algos):
-        print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
-    print(f"Oscillation period minimum gaps: {min_gaps_period}")
+    # for j, algo in enumerate(algos):
+        # print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
+    # print(f"Oscillation period minimum gaps: {min_gaps_period}")
 
     get_plot()

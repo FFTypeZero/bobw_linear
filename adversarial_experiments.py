@@ -65,7 +65,7 @@ def add_perturbation_3(X, theta_stars, osci_mag, move_gap, damped):
     while True:
         for j in range(num_features):
             # move_gap = np.random.randint(move_gap, move_gap + 200)
-            oscillate = np.random.randint(0, 2)
+            oscillate = np.random.randint(0, 3)
             if oscillate // 2 == 0:
                 phase_shift = np.random.uniform(0, 2 * np.pi)
                 thetas[:, j] = osci_mag * max_mag * np.sin(2 * ts * np.pi / move_gap + phase_shift) + theta_star[j]
@@ -106,11 +106,11 @@ if __name__ == '__main__':
     omega = 0.5
     T = 10000
     noise_level = 0.3
-    # osci_mags = [1.0 * i for i in range(10)]
-    osci_mag = 2.0
-    move_gaps = [300 + 300 * i for i in range(10)]
-    # move_gap = 200
-    num_settings = len(move_gaps)
+    osci_mags = [1.0 * i for i in range(10)]
+    # osci_mag = 2.0
+    # move_gaps = [300 + 300 * i for i in range(10)]
+    move_gap = 900
+    num_settings = len(osci_mags)
     min_gaps = np.zeros(num_settings)
 
     damped = False
@@ -123,7 +123,7 @@ if __name__ == '__main__':
     np.random.seed(6)
     X, theta_stars = get_sto_instance_2(D, T)
 
-    for i, move_gap in enumerate(move_gaps):
+    for i, osci_mag in enumerate(osci_mags):
         # X, thetas = get_adv_instance_2(d, T, omega, osci_mag, move_gap)
         thetas = add_perturbation_3(X, theta_stars, osci_mag, move_gap, damped)
 
