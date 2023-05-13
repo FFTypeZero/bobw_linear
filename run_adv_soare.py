@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import run_trials_in_parallel, compute_gap
@@ -79,8 +80,7 @@ def run_change_period(algos, n_trials=1000):
     return results_total, min_gaps
 
 
-def get_plot():
-    algos = ['G-BAI', 'Peace', 'P1-Peace']
+def get_plot(algos):
     fig, axs = plt.subplots(2, 2)
     for algo in algos:
         loaded_osci = np.load(f'plot_data/{algo}/{algo}_results_soare_osci.npz')
@@ -124,16 +124,23 @@ def get_plot():
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Run non-stationary experiments")
+    parser.add_argument("-r", "--run", type=bool, default=True,
+                        help="Whether to run the experiments or just plot the results")
+    args = parser.parse_args()
+    run = args.run
+
     n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace']
 
-    results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
-    results_period, min_gaps_period = run_change_period(algos, n_trials)
-    for j, algo in enumerate(algos):
-        print(f"{algo} Oscillation magnitude accuracy: {np.mean(results_osci[j], axis=1)}")
-    print(f"Oscillation magnitude minimum gaps: {min_gaps_osci}")
-    for j, algo in enumerate(algos):
-        print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
-    print(f"Oscillation period minimum gaps: {min_gaps_period}")
+    if run:
+        results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
+        results_period, min_gaps_period = run_change_period(algos, n_trials)
+        for j, algo in enumerate(algos):
+            print(f"{algo} Oscillation magnitude accuracy: {np.mean(results_osci[j], axis=1)}")
+        print(f"Oscillation magnitude minimum gaps: {min_gaps_osci}")
+        for j, algo in enumerate(algos):
+            print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
+        print(f"Oscillation period minimum gaps: {min_gaps_period}")
 
-    get_plot()
+    get_plot(algos)
