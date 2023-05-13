@@ -136,7 +136,7 @@ def run_change_osci(algos, n_trials=1000):
 def run_change_period(algos, n_trials=1000):
     T = 10000
     noise_level = 0.3
-    osci_mag = 1.0
+    osci_mag = 2.0
 
     move_gaps = [300 + 300 * i for i in range(10)]
     min_gaps = np.zeros(len(move_gaps))
