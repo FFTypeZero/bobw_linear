@@ -107,7 +107,7 @@ if __name__ == "__main__":
     Ds = [4]
 
     n_trials = 20
-    algos = ['G_design', 'Peace', 'P1-Peace']
+    algos = ['G-BAI', 'Peace', 'P1-Peace']
     results_total = np.zeros((len(algos), len(Ds), n_trials))
     np.random.seed(6)
 

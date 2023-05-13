@@ -9,7 +9,7 @@ def get_sto_multi(D, T, num_sparse=None):
     Multivariate testing example from Fiez et al. (2019)
     """
     alpha1 = 1
-    alpha2 = 0.2
+    alpha2 = 0.5
     variants = list(range(D))
     individual_index_dict = {}
 
@@ -72,7 +72,7 @@ def get_sto_multi(D, T, num_sparse=None):
     return X, thetas
 
 
-def add_perturbation_multi(X, theta_stars, osci_mag, move_gap, gap_plus):
+def add_perturbation_multi(X, theta_stars, osci_mag, move_gap):
     T, num_features = theta_stars.shape
     theta_star = theta_stars[0]
 
@@ -81,12 +81,24 @@ def add_perturbation_multi(X, theta_stars, osci_mag, move_gap, gap_plus):
 
     gap, opt_arm = compute_gap(X, theta_star)
     thetas = np.zeros((T, num_features))
-    for j in range(num_features):
-        phase_shift = np.random.uniform(0, 2 * np.pi)
-        thetas[:, j] = osci_mag * max_mag * np.sin(2 * ts * np.pi / move_gap + phase_shift) + theta_star[j]
+    count = 0
+    while True:
+        for j in range(num_features):
+            oscillate = np.random.randint(0, 2)
+            if oscillate // 2 == 0:
+                phase_shift = np.random.uniform(0, 2 * np.pi)
+                thetas[:, j] = osci_mag * max_mag * np.sin(2 * ts * np.pi / move_gap + phase_shift) + theta_star[j]
 
-    gap_adv, opt_arm_adv = compute_gap(X, thetas)
-    assert opt_arm_adv == opt_arm
+        gap_adv, opt_arm_adv = compute_gap(X, thetas)
+
+        if opt_arm_adv == opt_arm:
+            break
+        else:
+            count += 1
+            if count > 50:
+                print(f"Current osci_mag: {osci_mag}, move_gap: {move_gap}")
+                print('Warning: too many trials to generate non-stationary example')
+                assert False
 
     return thetas
 
@@ -97,7 +109,7 @@ def run_change_osci(algos, n_trials=1000):
     osci_mags = [1.0 * i for i in range(9)]
     min_gaps = np.zeros(len(osci_mags))
 
-    move_gap = 200
+    move_gap = 300
     D = 4
 
     results_total = np.zeros((len(algos), len(osci_mags), n_trials))
@@ -113,8 +125,8 @@ def run_change_osci(algos, n_trials=1000):
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
-            # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_osci.npz', 
-                                # results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
+            np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_osci.npz', 
+                                results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
 
     # for j, algo in enumerate(algos):
         # print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
@@ -124,7 +136,7 @@ def run_change_osci(algos, n_trials=1000):
 def run_change_period(algos, n_trials=1000):
     T = 10000
     noise_level = 0.3
-    osci_mag = 2.0
+    osci_mag = 1.0
 
     move_gaps = [300 + 300 * i for i in range(1, 10)]
     min_gaps = np.zeros(len(move_gaps))
@@ -143,8 +155,8 @@ def run_change_period(algos, n_trials=1000):
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
-            # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_period.npz', 
-                                # results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
+            np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_period.npz', 
+                                results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
 
     # for j, algo in enumerate(algos):
         # print(f"{algo} Accuracy: {np.mean(results_total[j], axis=1)}")
