@@ -112,13 +112,19 @@ def run_change_osci(algos, n_trials=1000):
 
     move_gap = 900
     D = 4
-
     results_total = np.zeros((len(algos), len(osci_mags), n_trials))
+
+    # Make sure the instances are the same for each run
     np.random.seed(6)
+    thetas_all = []
     X, theta_stars = get_sto_multi(D, T)
+    for osci_mag in osci_mags:
+        thetas_temp = add_perturbation_multi(X, theta_stars, osci_mag, move_gap)
+        thetas_all.append(thetas_temp)
 
     for i, osci_mag in enumerate(osci_mags):
-        thetas = add_perturbation_multi(X, theta_stars, osci_mag, move_gap)
+        # thetas = add_perturbation_multi(X, theta_stars, osci_mag, move_gap)
+        thetas = thetas_all[i]
 
         gap, opt_arm = compute_gap(X, thetas)
         min_gaps[i] = gap
@@ -126,8 +132,8 @@ def run_change_osci(algos, n_trials=1000):
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
-            # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_osci.npz', 
-                                # results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
+            np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_osci2.npz', 
+                                results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
 
     return results_total, min_gaps
 
@@ -140,13 +146,19 @@ def run_change_period(algos, n_trials=1000):
     move_gaps = [300 + 300 * i for i in range(10)]
     min_gaps = np.zeros(len(move_gaps))
     D = 4
-
     results_total = np.zeros((len(algos), len(move_gaps), n_trials))
+
+    # Make sure the instances are the same for each run
     np.random.seed(6)
+    theta_all = []
     X, theta_stars = get_sto_multi(D, T)
+    for move_gap in move_gaps:
+        theta_temp = add_perturbation_multi(X, theta_stars, osci_mag, move_gap)
+        theta_all.append(theta_temp)
 
     for i, move_gap in enumerate(move_gaps):
-        thetas = add_perturbation_multi(X, theta_stars, osci_mag, move_gap)
+        # thetas = add_perturbation_multi(X, theta_stars, osci_mag, move_gap)
+        thetas = theta_all[i]
 
         gap, opt_arm = compute_gap(X, thetas)
         min_gaps[i] = gap
@@ -154,8 +166,8 @@ def run_change_period(algos, n_trials=1000):
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
-            # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_period.npz', 
-                                # results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
+            np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_period2.npz', 
+                                results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
 
     return results_total, min_gaps
 
@@ -163,8 +175,8 @@ def run_change_period(algos, n_trials=1000):
 def get_plot(algos):
     fig, axs = plt.subplots(2, 2)
     for algo in algos:
-        loaded_osci = np.load(f'plot_data/{algo}/{algo}_results_multi_osci.npz')
-        loaded_period = np.load(f'plot_data/{algo}/{algo}_results_multi_period.npz')
+        loaded_osci = np.load(f'plot_data/{algo}/{algo}_results_multi_osci2.npz')
+        loaded_period = np.load(f'plot_data/{algo}/{algo}_results_multi_period2.npz')
         results_osci = loaded_osci['results']
         results_period = loaded_period['results']
         osci_mags = loaded_osci['osci_mags']
@@ -198,8 +210,6 @@ def get_plot(algos):
         # axs[0, i].set_aspect(1.0 / axs[i].get_data_ratio(), adjustable='box')
     axs[1, 0].grid(True)
     axs[1, 1].grid(True)
-    # axs[1, 0].legend(loc='best')
-    # axs[1, 1].legend(loc='best')
 
     plt.suptitle("Experiments under Non-stationary Multivariate Testing Example")
     plt.show()
@@ -214,7 +224,6 @@ if __name__ == '__main__':
 
     n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI']
-    # algos = ['P1-RAGE', 'OD-LinBAI']
 
     if run:
         results_osci, min_gaps_osci = run_change_osci(algos, n_trials)

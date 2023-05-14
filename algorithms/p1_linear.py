@@ -127,13 +127,13 @@ class P1_Linear(BAI_Base):
 
         design_t = self.G_design
         theta_hat_t = np.zeros(self.d)
-        Sigma_t_inv = np.linalg.pinv(self.X.T@np.diag(design_t)@self.X)
+        Sigma_t_inv = np.linalg.pinv(self.X.T @ np.diag(design_t) @ self.X)
         for t in range(self.T):
             # Pull arms and compute theta_hat by IPS estimation
             i_t = np.random.choice(self.n, p=design_t)
             r_t = self.reward_func(self.X[i_t], t)
             target_t = self.X[i_t] * r_t
-            theta_hat_s = Sigma_t_inv@target_t
+            theta_hat_s = Sigma_t_inv @ target_t
             theta_hat_t = (theta_hat_t * t + theta_hat_s) / (t + 1)
 
             # Compute design for next round

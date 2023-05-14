@@ -18,7 +18,7 @@ class BAI_G_Design(BAI_Base):
     def __init__(self, X, T, reward_func) -> None:
         self.G_design = fw_XY(X, X)[0]
         print("G_design computation complete.")
-        self.Sigma = X.T@np.diag(self.G_design)@X
+        self.Sigma = X.T @ np.diag(self.G_design) @ X
         super().__init__(X, T, reward_func)
 
     def run(self):
@@ -28,11 +28,11 @@ class BAI_G_Design(BAI_Base):
             i_t = np.random.choice(self.n, p=self.G_design)
             r_t = self.reward_func(self.X[i_t], t)
             target_t = self.X[i_t] * r_t
-            theta_hat_s = Sigma_inv@target_t
+            theta_hat_s = Sigma_inv @ target_t
             theta_hat_t = (theta_hat_t * t + theta_hat_s) / (t + 1)
             if t % 5000 == 0:
                 print("G-BAI: t = {}".format(t))
-        recommendation = np.argmax(self.X@theta_hat_t)
+        recommendation = np.argmax(self.X @ theta_hat_t)
         return self.X[recommendation]
 
 if __name__ == '__main__':

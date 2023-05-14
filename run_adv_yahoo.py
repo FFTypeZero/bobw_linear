@@ -47,11 +47,11 @@ def run_change_duration(algos, n_trials=1000):
     T = 14000
     noise_level = 1.0
 
-    durations = [10, 50, 100, 200, 500, 1000, 2000]
+    durations = [50, 100, 200, 500, 1000, 2000]
     # durations = [100, 200]
     min_gaps = np.zeros(len(durations))
-
     results_total = np.zeros((len(algos), len(durations), n_trials))
+
     np.random.seed(6)
     X, thetas_single = get_yahoo_instance(num_x)
 
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     run = args.run
 
     n_trials = 20
-    algos = ['G-BAI', 'Peace', 'P1-Peace']
+    algos = ['G-BAI', 'Peace', 'P1-RAGE', 'OD-LinBAI']
 
     if run:
         results_duration, min_gaps_duration = run_change_duration(algos, n_trials)

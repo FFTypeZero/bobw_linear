@@ -15,6 +15,9 @@ class OD_LinBAI(BAI_Base):
         ds[0] = self.d
         numerator = np.sum(np.array([np.ceil(self.d / 2**r) for r in range(1, num_epochs)]))
         m = (self.T - np.minimum(self.n, self.d * (self.d + 1) / 2) - numerator) / num_epochs
+        if m <= 0:
+            print("Unenough budget! return random recommendation.")
+            return self.X[np.random.randint(self.n)]
 
         t = 0
         for r in range(1, num_epochs + 1):
@@ -43,6 +46,8 @@ class OD_LinBAI(BAI_Base):
             A_r = A_r[sort_idx]
             A_r = A_r[:remain_num_r]
             A_to_X_r = [A_to_X_r[idx] for idx in sort_idx[:remain_num_r]]
+            if remain_num_r <= 1:
+                break
 
         return self.X[A_to_X_r[0]]
     

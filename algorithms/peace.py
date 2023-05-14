@@ -123,24 +123,25 @@ class Peace(BAI_Base):
             design_i = (sto_design_i + self.G_design) / 2
 
             # Pull arms and compute theta_hat by IPS estimation
-            Sigma_i = self.X.T@np.diag(design_i)@self.X
+            Sigma_i_inv = np.linalg.pinv(self.X.T @ np.diag(design_i) @ self.X)
             if epoch == num_epoches - 1:
                 epoch_length = self.T - epoch_length * epoch
             for _ in range(epoch_length):
                 i_t = np.random.choice(self.n, p=design_i)
                 r_t = self.reward_func(self.X[i_t], t)
+                target_t = self.X[i_t] * r_t
 
-                theta_hat_s = np.linalg.solve(Sigma_i, self.X[i_t] * r_t)
+                theta_hat_s = Sigma_i_inv @ target_t
                 theta_hat_t = (theta_hat_t * t + theta_hat_s) / (t + 1)
                 t += 1
 
             # Eliminate arms for design computing
             if epoch < num_epoches - 1 and X_i.shape[0] > 1:
-                y_hat = X_i@theta_hat_t
+                y_hat = X_i @ theta_hat_t
                 X_i = X_i[np.flip(np.argsort(y_hat))]
                 X_i = self.__eliminate_Xi(rho_i / 2, X_i)
 
-        recommendation = np.argmax(self.X@theta_hat_t)
+        recommendation = np.argmax(self.X @ theta_hat_t)
         return self.X[recommendation]
 
     def run(self):
