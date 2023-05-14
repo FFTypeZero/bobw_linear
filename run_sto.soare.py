@@ -67,14 +67,14 @@ def get_plot(algos):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Run non-stationary experiments")
+    parser = argparse.ArgumentParser(description="Run stationary experiments")
     parser.add_argument("-r", "--run", type=bool, default=True,
                         help="Whether to run the experiments or just plot the results")
     args = parser.parse_args()
     run = args.run
 
     n_trials = 1000
-    algos = ['G-BAI', 'Peace', 'P1-Peace']
+    algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE']
 
     if run:
         results, min_gaps = run_change_T(algos, n_trials)
