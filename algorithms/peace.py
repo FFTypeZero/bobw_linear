@@ -1,6 +1,6 @@
 import numpy as np
-from g_bai import BAI_Base
-from fw import fw_XY
+from algorithms.g_bai import BAI_Base
+from algorithms.fw import fw_XY
 
 
 class Peace(BAI_Base):
@@ -83,7 +83,6 @@ class Peace(BAI_Base):
                 allocation_i = self.__rounding(design_i, self.T - epoch_length * epoch)
 
             # Pull arms and compute theta_hat by least square estimation
-            # print("epoch = {}, allocation_i = {}".format(epoch + 1, allocation_i))
             covariance = np.zeros((self.d, self.d))
             target = np.zeros(self.d)
             samples = np.concatenate([np.repeat(j, allocation_i[j]) for j in range(len(allocation_i))])

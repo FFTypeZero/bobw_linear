@@ -1,8 +1,8 @@
 import numpy as np
 import concurrent.futures
-from g_bai import BAI_G_Design
-from peace import Peace
-from p1_linear import P1_Linear
+from algorithms.g_bai import BAI_G_Design
+from algorithms.peace import Peace
+from algorithms.p1_linear import P1_Linear
 
 
 def single_trial(trial_id, X, T, thetas, opt_arm, algo, noise_level=1.0):

@@ -1,5 +1,5 @@
 import numpy as np
-from fw import fw_XY
+from algorithms.fw import fw_XY
 
 
 class BAI_Base:
@@ -23,10 +23,12 @@ class BAI_G_Design(BAI_Base):
 
     def run(self):
         theta_hat_t = np.zeros(self.d)
+        Sigma_inv = np.linalg.pinv(self.Sigma)
         for t in range(self.T):
             i_t = np.random.choice(self.n, p=self.G_design)
             r_t = self.reward_func(self.X[i_t], t)
-            theta_hat_s = np.linalg.solve(self.Sigma, self.X[i_t] * r_t)
+            target_t = self.X[i_t] * r_t
+            theta_hat_s = Sigma_inv@target_t
             theta_hat_t = (theta_hat_t * t + theta_hat_s) / (t + 1)
             if t % 5000 == 0:
                 print("G-BAI: t = {}".format(t))

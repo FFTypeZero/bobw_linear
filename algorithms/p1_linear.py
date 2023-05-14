@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from g_bai import BAI_Base
-from fw import fw_XY
+from algorithms.g_bai import BAI_Base
+from algorithms.fw import fw_XY
 
 
 class P1_Linear(BAI_Base):
@@ -127,12 +127,13 @@ class P1_Linear(BAI_Base):
 
         design_t = self.G_design
         theta_hat_t = np.zeros(self.d)
+        Sigma_t_inv = np.linalg.pinv(self.X.T@np.diag(design_t)@self.X)
         for t in range(self.T):
             # Pull arms and compute theta_hat by IPS estimation
             i_t = np.random.choice(self.n, p=design_t)
             r_t = self.reward_func(self.X[i_t], t)
-            Sigma_t = self.X.T@np.diag(design_t)@self.X
-            theta_hat_s = np.linalg.solve(Sigma_t, self.X[i_t] * r_t)
+            target_t = self.X[i_t] * r_t
+            theta_hat_s = Sigma_t_inv@target_t
             theta_hat_t = (theta_hat_t * t + theta_hat_s) / (t + 1)
 
             # Compute design for next round
@@ -141,9 +142,11 @@ class P1_Linear(BAI_Base):
             if self.alt:
                 print(f"P1_Linear: starts round {t} Peace_Elimination.")
                 design_t = self.peace_elimination(theta_hat_t)
+                Sigma_t_inv = np.linalg.pinv(self.X.T@np.diag(design_t)@self.X)
             else:
                 print(f"P1_Linear: starts round {t} RAGE_Elimination.")
                 design_t = self.rage_elimination(theta_hat_t)
+                Sigma_t_inv = np.linalg.pinv(self.X.T@np.diag(design_t)@self.X)
         recommendation = np.argmax(self.X@theta_hat_t)
         return self.X[recommendation]
 
