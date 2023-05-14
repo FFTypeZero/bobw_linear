@@ -126,8 +126,8 @@ def run_change_osci(algos, n_trials=1000):
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
-            np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_osci.npz', 
-                                results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
+            # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_osci.npz', 
+                                # results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
 
     return results_total, min_gaps
 
@@ -154,8 +154,8 @@ def run_change_period(algos, n_trials=1000):
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
-            np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_period.npz', 
-                                results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
+            # np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_period.npz', 
+                                # results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
 
     return results_total, min_gaps
 
@@ -198,6 +198,8 @@ def get_plot(algos):
         # axs[0, i].set_aspect(1.0 / axs[i].get_data_ratio(), adjustable='box')
     axs[1, 0].grid(True)
     axs[1, 1].grid(True)
+    # axs[1, 0].legend(loc='best')
+    # axs[1, 1].legend(loc='best')
 
     plt.suptitle("Experiments under Non-stationary Multivariate Testing Example")
     plt.show()
@@ -205,13 +207,14 @@ def get_plot(algos):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run non-stationary experiments")
-    parser.add_argument("-r", "--run", type=bool, default=True,
+    parser.add_argument("-r", "--run", type=int, default=1,
                         help="Whether to run the experiments or just plot the results")
     args = parser.parse_args()
     run = args.run
 
     n_trials = 1000
-    algos = ['G-BAI', 'Peace', 'P1-Peace']
+    algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI']
+    # algos = ['P1-RAGE', 'OD-LinBAI']
 
     if run:
         results_osci, min_gaps_osci = run_change_osci(algos, n_trials)

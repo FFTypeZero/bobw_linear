@@ -68,7 +68,7 @@ def get_plot(algos):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run stationary experiments")
-    parser.add_argument("-r", "--run", type=bool, default=True,
+    parser.add_argument("-r", "--run", type=int, default=1,
                         help="Whether to run the experiments or just plot the results")
     args = parser.parse_args()
     run = args.run
