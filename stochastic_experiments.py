@@ -99,21 +99,22 @@ if __name__ == "__main__":
 
     # algo = args.algorithm
     d = 10
-    omega = 0.1
-    noise_level = 0.3
+    omega = 0.2
+    noise_level = 1.0
     # Ts = np.array([10 + 1000 * i for i in range(11)])
     T = 10000
 
     Ds = [4]
 
     n_trials = 20
-    algos = ['G-BAI', 'Peace', 'P1-Peace']
+    # algos = ['G-BAI', 'Peace', 'P1-Peace']
+    algos = ['OD-LinBAI']
     results_total = np.zeros((len(algos), len(Ds), n_trials))
     np.random.seed(6)
 
     for i, D in enumerate(Ds):
-        # X, thetas = get_sto_instance_1(d, T, omega)
-        X, thetas = get_sto_instance_2(D, T)
+        X, thetas = get_sto_instance_1(d, T, omega)
+        # X, thetas = get_sto_instance_2(D, T)
         gap, opt_arm = compute_gap(X, thetas)
 
         for j, algo in enumerate(algos):

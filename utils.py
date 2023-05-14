@@ -3,6 +3,7 @@ import concurrent.futures
 from algorithms.g_bai import BAI_G_Design
 from algorithms.peace import Peace
 from algorithms.p1_linear import P1_Linear
+from algorithms.od_linbai import OD_LinBAI
 
 
 def single_trial(trial_id, X, T, thetas, opt_arm, algo, noise_level=1.0):
@@ -17,6 +18,8 @@ def single_trial(trial_id, X, T, thetas, opt_arm, algo, noise_level=1.0):
         recommendation = P1_Linear(X, T, reward_func, batch=True, alt=False, subroutine_max_iter=15).run()
     elif algo == 'P1-Peace':
         recommendation = P1_Linear(X, T, reward_func, batch=True, alt=True).run()
+    elif algo == 'OD-LinBAI':
+        recommendation = OD_LinBAI(X, T, reward_func).run()
     else:
         raise ValueError("Unknown algo: {}".format(algo))
     if np.all(recommendation == X[opt_arm]):
