@@ -75,7 +75,6 @@ if __name__ == '__main__':
 
     n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
-    # algos = ['Mixed-Peace']
 
     if run:
         results, min_gaps = run_change_T(algos, n_trials)

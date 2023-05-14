@@ -111,11 +111,11 @@ def get_plot(algos):
     axs[0, 1].set_title('Error Probability vs. Oscillation Period')
     axs[1, 0].set_title('Minimum Gap vs. Oscillation Magnitude')
     axs[1, 1].set_title('Minimum Gap vs. Oscillation Period')
+    axs[1, 0].set_ylim([0, 0.4])
     for i in range(2):
         axs[0, i].set_ylim([-0.05, 1.05])
         axs[0, i].legend(loc='best')
         axs[0, i].grid(True)
-        # axs[0, i].set_aspect(1.0 / axs[i].get_data_ratio(), adjustable='box')
     axs[1, 0].grid(True)
     axs[1, 1].grid(True)
 
@@ -131,17 +131,17 @@ if __name__ == '__main__':
     run = args.run
 
     n_trials = 1000
-    # algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI']
-    algos = ['P1-RAGE', 'OD-LinBAI']
+    algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI']
+    # algos = ['P1-RAGE', 'OD-LinBAI']
 
-    if run:
-        results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
-        results_period, min_gaps_period = run_change_period(algos, n_trials)
-        for j, algo in enumerate(algos):
-            print(f"{algo} Oscillation magnitude accuracy: {np.mean(results_osci[j], axis=1)}")
-        print(f"Oscillation magnitude minimum gaps: {min_gaps_osci}")
-        for j, algo in enumerate(algos):
-            print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
-        print(f"Oscillation period minimum gaps: {min_gaps_period}")
+    # if run:
+        # results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
+        # results_period, min_gaps_period = run_change_period(algos, n_trials)
+        # for j, algo in enumerate(algos):
+        #     print(f"{algo} Oscillation magnitude accuracy: {np.mean(results_osci[j], axis=1)}")
+        # print(f"Oscillation magnitude minimum gaps: {min_gaps_osci}")
+        # for j, algo in enumerate(algos):
+        #     print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
+        # print(f"Oscillation period minimum gaps: {min_gaps_period}")
 
     get_plot(algos)
