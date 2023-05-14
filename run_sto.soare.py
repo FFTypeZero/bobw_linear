@@ -33,7 +33,7 @@ def run_change_T(algos, n_trials=1000):
     min_gaps = np.zeros(len(Ts))
     np.random.seed(6)
 
-    for i, D in enumerate(Ds):
+    for i, T in enumerate(Ts):
         X, thetas = get_soare_instance(d, T, omega)
         gap, opt_arm = compute_gap(X, thetas)
         min_gaps[i] = gap
