@@ -131,17 +131,16 @@ if __name__ == '__main__':
     run = args.run
 
     n_trials = 1000
-    algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI']
-    # algos = ['P1-RAGE', 'OD-LinBAI']
+    algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     # if run:
-        # results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
-        # results_period, min_gaps_period = run_change_period(algos, n_trials)
-        # for j, algo in enumerate(algos):
-        #     print(f"{algo} Oscillation magnitude accuracy: {np.mean(results_osci[j], axis=1)}")
-        # print(f"Oscillation magnitude minimum gaps: {min_gaps_osci}")
-        # for j, algo in enumerate(algos):
-        #     print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
-        # print(f"Oscillation period minimum gaps: {min_gaps_period}")
+    #     results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
+    #     results_period, min_gaps_period = run_change_period(algos, n_trials)
+    #     for j, algo in enumerate(algos):
+    #         print(f"{algo} Oscillation magnitude accuracy: {np.mean(results_osci[j], axis=1)}")
+    #     print(f"Oscillation magnitude minimum gaps: {min_gaps_osci}")
+    #     for j, algo in enumerate(algos):
+    #         print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
+    #     print(f"Oscillation period minimum gaps: {min_gaps_period}")
 
     get_plot(algos)

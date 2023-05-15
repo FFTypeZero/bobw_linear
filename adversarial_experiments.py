@@ -7,7 +7,7 @@ from stochastic_experiments import get_sto_instance_2
 
 def get_adv_instance_1(d, T, omega):
     """
-    Adversarial example to fail RAGE
+    Adversarial example to fail Peace
     """
     X = np.eye(d)
     x_extra = np.zeros(d)
