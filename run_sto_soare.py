@@ -28,7 +28,7 @@ def run_change_T(algos, n_trials=1000):
     d = 10
     omega = 0.1
     noise_level = 1.0
-    Ts = np.array([10 + 1000 * i for i in range(7)])
+    Ts = np.array([10 + 1000 * i for i in range(10)])
 
     results_total = np.zeros((len(algos), len(Ts), n_trials))
     min_gaps = np.zeros(len(Ts))
@@ -40,7 +40,7 @@ def run_change_T(algos, n_trials=1000):
         min_gaps[i] = gap
 
         for j, algo in enumerate(algos):
-            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
+            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, n_workers=6)
             results_total[j][i] = np.array(results)
 
             if not os.path.exists(f'plot_data/{algo}'):

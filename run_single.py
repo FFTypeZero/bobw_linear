@@ -1,3 +1,4 @@
+import os
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -43,6 +44,9 @@ def run_malicious(algos, n_trials=1000):
     for j, algo in enumerate(algos):
         results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
         results_total[j] = np.array(results)
+
+        if not os.path.exists(f'plot_data/Single'):
+            os.makedirs(f'plot_data/Single')
         np.savez_compressed(f'plot_data/Single/single_results_malicious.npz', 
                             results=results_total, algos=algos)
 
@@ -64,6 +68,9 @@ def run_sto_multi(algos, n_trials=1000):
     for j, algo in enumerate(algos):
         results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
         results_total[j] = np.array(results)
+
+        if not os.path.exists(f'plot_data/Single'):
+            os.makedirs(f'plot_data/Single')
         np.savez_compressed(f'plot_data/Single/single_results_multi.npz', 
                             results=results_total, algos=algos)
 
@@ -98,12 +105,12 @@ if __name__ == '__main__':
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
-        # results_malicious = run_malicious(algos, n_trials)
+        results_malicious = run_malicious(algos, n_trials)
         results_multi = run_sto_multi(algos, n_trials)
-        # for j, algo in enumerate(algos):
-            # print(f"{algo} malicious accuracy: {np.mean(results_malicious[j])}")
+        for j, algo in enumerate(algos):
+            print(f"{algo} malicious accuracy: {np.mean(results_malicious[j])}")
         for j, algo in enumerate(algos):
             print(f"{algo} multi accuracy: {np.mean(results_multi[j])}")
     
-    # get_plot('malicious', 'Experiments under Malicious Example')
+    get_plot('malicious', 'Experiments under Malicious Example')
     get_plot('multi', 'Experiments under Stationary Multivariate Testing Example')

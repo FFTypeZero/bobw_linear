@@ -1,3 +1,4 @@
+import os
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -48,7 +49,6 @@ def run_change_duration(algos, n_trials=1000):
     noise_level = 1.0
 
     durations = [100, 200, 500, 1000, 1500, 3000]
-    # durations = [100, 200]
     min_gaps = np.zeros(len(durations))
     results_total = np.zeros((len(algos), len(durations), n_trials))
 
@@ -62,8 +62,11 @@ def run_change_duration(algos, n_trials=1000):
         min_gaps[i] = gap
 
         for j, algo in enumerate(algos):
-            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
+            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, n_workers=6)
             results_total[j][i] = np.array(results)
+
+            if not os.path.exists(f'plot_data/{algo}'):
+                os.makedirs(f'plot_data/{algo}')
             np.savez_compressed(f'plot_data/{algo}/{algo}_results_yahoo_repeat.npz', 
                                 results=results_total[j], durations=durations, min_gaps=min_gaps)
 
@@ -99,8 +102,8 @@ if __name__ == '__main__':
     run = args.run
 
     n_trials = 1000
-    # algos = ['G-BAI', 'Peace', 'P1-RAGE', 'OD-LinBAI']
-    algos = ['G-BAI', 'Peace']
+    algos = ['P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
+    # algos = ['G-BAI', 'Peace']
 
     if run:
         results_duration, min_gaps_duration = run_change_duration(algos, n_trials)
