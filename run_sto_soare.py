@@ -1,3 +1,4 @@
+import os
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,6 +42,9 @@ def run_change_T(algos, n_trials=1000):
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
+
+            if not os.path.exists(f'plot_data/{algo}'):
+                os.makedirs(f'plot_data/{algo}')
             np.savez_compressed(f'plot_data/{algo}/{algo}_results_soare_sto.npz', 
                                 results=results_total[j], Ts=Ts, min_gaps=min_gaps)
 

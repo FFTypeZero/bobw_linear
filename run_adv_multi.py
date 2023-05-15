@@ -1,3 +1,4 @@
+import os
 import argparse
 import itertools
 import numpy as np
@@ -123,7 +124,6 @@ def run_change_osci(algos, n_trials=1000):
         thetas_all.append(thetas_temp)
 
     for i, osci_mag in enumerate(osci_mags):
-        # thetas = add_perturbation_multi(X, theta_stars, osci_mag, move_gap)
         thetas = thetas_all[i]
 
         gap, opt_arm = compute_gap(X, thetas)
@@ -132,6 +132,9 @@ def run_change_osci(algos, n_trials=1000):
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
+
+            if not os.path.exists(f'plot_data/{algo}'):
+                os.makedirs(f'plot_data/{algo}')
             np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_osci2.npz', 
                                 results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
 
@@ -157,7 +160,6 @@ def run_change_period(algos, n_trials=1000):
         theta_all.append(theta_temp)
 
     for i, move_gap in enumerate(move_gaps):
-        # thetas = add_perturbation_multi(X, theta_stars, osci_mag, move_gap)
         thetas = theta_all[i]
 
         gap, opt_arm = compute_gap(X, thetas)
@@ -166,6 +168,9 @@ def run_change_period(algos, n_trials=1000):
         for j, algo in enumerate(algos):
             results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
             results_total[j][i] = np.array(results)
+
+            if not os.path.exists(f'plot_data/{algo}'):
+                os.makedirs(f'plot_data/{algo}')
             np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_period2.npz', 
                                 results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
 

@@ -50,7 +50,7 @@ def run_malicious(algos, n_trials=1000):
 
 
 def run_sto_multi(algos, n_trials=1000):
-    T = 8000
+    T = 10000
     noise_level = 0.3
     D = 4
     results_total = np.zeros((len(algos), n_trials))
@@ -98,12 +98,12 @@ if __name__ == '__main__':
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
-        results_malicious = run_malicious(algos, n_trials)
+        # results_malicious = run_malicious(algos, n_trials)
         results_multi = run_sto_multi(algos, n_trials)
-        for j, algo in enumerate(algos):
-            print(f"{algo} malicious accuracy: {np.mean(results_malicious[j])}")
+        # for j, algo in enumerate(algos):
+            # print(f"{algo} malicious accuracy: {np.mean(results_malicious[j])}")
         for j, algo in enumerate(algos):
             print(f"{algo} multi accuracy: {np.mean(results_multi[j])}")
     
-    get_plot('malicious', 'Experiments under Malicious Example')
-    get_plot('multi', 'Experiments under Multivariate Testing Example')
+    # get_plot('malicious', 'Experiments under Malicious Example')
+    get_plot('multi', 'Experiments under Stationary Multivariate Testing Example')
