@@ -223,7 +223,8 @@ if __name__ == '__main__':
     run = args.run
 
     n_trials = 1000
-    algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI']
+    # algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI']
+    algos = ['Mixed-Peace']
 
     if run:
         results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
