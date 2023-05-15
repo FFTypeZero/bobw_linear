@@ -60,7 +60,7 @@ def get_plot(algos):
     axs.set_xlabel('$T$')
     axs.set_ylabel('error probability')
     axs.set_yscale('log')
-    axs.set_title('Error Probability vs. $T$ Under Soare et al. (2014) Examples')
+    axs.set_title("Error Probability vs. $T$ Under Soare et al. (2014)'s Example")
     axs.legend(loc='best')
     axs.grid(True)
     plt.show()
