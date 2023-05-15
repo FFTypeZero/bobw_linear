@@ -205,9 +205,9 @@ def get_plot(algos):
     axs[1, 1].set_title('Minimum Gap vs. Oscillation Period')
     for i in range(2):
         axs[0, i].set_ylim([-0.05, 1.05])
-        axs[0, i].legend(loc='best')
+        # axs[0, i].set_yscale('log')
         axs[0, i].grid(True)
-        # axs[0, i].set_aspect(1.0 / axs[i].get_data_ratio(), adjustable='box')
+    axs[0, 0].legend(loc='lower left', bbox_to_anchor=(0.1,0), bbox_transform=fig.transFigure, ncol=len(algos))
     axs[1, 0].grid(True)
     axs[1, 1].grid(True)
 
@@ -224,7 +224,6 @@ if __name__ == '__main__':
 
     n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
-    # algos = ['Mixed-Peace']
 
     if run:
         results_osci, min_gaps_osci = run_change_osci(algos, n_trials)

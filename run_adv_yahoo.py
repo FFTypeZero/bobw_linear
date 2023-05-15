@@ -44,10 +44,10 @@ def add_repeatition(thetas, T, L):
 
 def run_change_duration(algos, n_trials=1000):
     num_x = 36
-    T = 14000
+    T = 21000
     noise_level = 1.0
 
-    durations = [50, 100, 200, 500, 1000, 2000]
+    durations = [100, 200, 500, 1000, 1500, 3000]
     # durations = [100, 200]
     min_gaps = np.zeros(len(durations))
     results_total = np.zeros((len(algos), len(durations), n_trials))
@@ -98,8 +98,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     run = args.run
 
-    n_trials = 20
-    algos = ['G-BAI', 'Peace', 'P1-RAGE', 'OD-LinBAI']
+    n_trials = 1000
+    # algos = ['G-BAI', 'Peace', 'P1-RAGE', 'OD-LinBAI']
+    algos = ['G-BAI', 'Peace']
 
     if run:
         results_duration, min_gaps_duration = run_change_duration(algos, n_trials)
