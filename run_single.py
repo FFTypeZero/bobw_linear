@@ -50,7 +50,7 @@ def run_malicious(algos, n_trials=1000):
 
 
 def run_sto_multi(algos, n_trials=1000):
-    T = 10000
+    T = 8000
     noise_level = 0.3
     D = 4
     results_total = np.zeros((len(algos), n_trials))
@@ -65,7 +65,7 @@ def run_sto_multi(algos, n_trials=1000):
         results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
         results_total[j] = np.array(results)
         np.savez_compressed(f'plot_data/Single/single_results_multi.npz', 
-                            results=results_total[j], algos=algos)
+                            results=results_total, algos=algos)
 
     return results_total
 
