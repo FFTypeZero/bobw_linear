@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from utils import run_trials_in_parallel, compute_gap
 
 
-
 def get_malicious_instance(d, T, omega):
     """
     Malicious example to fail Peace
@@ -43,14 +42,14 @@ def run_malicious(algos, n_trials=1000):
     for j, algo in enumerate(algos):
         results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
         results_total[j] = np.array(results)
-        np.savez_compressed(f'plot_data/single/single_results_malicious.npz', 
+        np.savez_compressed(f'plot_data/Single/single_results_malicious.npz', 
                             results=results_total, algos=algos)
 
     return results_total
 
 
 def get_plot():
-    loaded = np.load(f'plot_data/single/single_results_malicious.npz')
+    loaded = np.load(f'plot_data/Single/single_results_malicious.npz')
     results = loaded['results']
     algos = loaded['algos']
     error_prob = 1.0 - np.mean(results, axis=1)
