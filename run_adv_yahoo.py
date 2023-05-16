@@ -26,7 +26,7 @@ def run_change_duration(algos, n_trials=1000, save=True):
     results_total = np.zeros((len(algos), len(durations), n_trials))
 
     np.random.seed(6)
-    loaded = np.load('yahoo_data.npz')
+    loaded = np.load('yahoo_data_pca.npz')
     X = loaded['Xs']
     thetas_single = loaded['thetas']
 

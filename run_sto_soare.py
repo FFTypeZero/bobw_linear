@@ -29,6 +29,7 @@ def run_change_T(algos, n_trials=1000, save=True):
     omega = 0.1
     noise_level = 1.0
     Ts = np.array([10 + 1000 * i for i in range(10)])
+    # Ts = [1000, 3000, 6000, 9000]
 
     results_total = np.zeros((len(algos), len(Ts), n_trials))
     min_gaps = np.zeros(len(Ts))
@@ -78,8 +79,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     run = args.run
 
-    save = True
-    n_trials = 1000
+    save = False
+    n_trials = 50
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
