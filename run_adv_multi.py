@@ -180,10 +180,10 @@ def run_change_period(algos, n_trials=1000, save=True):
 
 
 def get_plot(algos):
-    fig, axs = plt.subplots(2, 2)
-    for algo in algos:
-        loaded_osci = np.load(f'plot_data/{algo}/{algo}_results_multi_osci.npz')
-        loaded_period = np.load(f'plot_data/{algo}/{algo}_results_multi_period.npz')
+    fig, axs = plt.subplots(2, 2, gridspec_kw={'height_ratios': [2, 1]}, figsize=(11, 7.5))
+    for j, algo in enumerate(algos):
+        loaded_osci = np.load(f'plot_data/{algo}/{algo}_results_multi_osci2.npz')
+        loaded_period = np.load(f'plot_data/{algo}/{algo}_results_multi_period2.npz')
         results_osci = loaded_osci['results']
         results_period = loaded_period['results']
         osci_mags = loaded_osci['osci_mags']
@@ -200,21 +200,21 @@ def get_plot(algos):
         axs[0, 0].fill_between(osci_mags, error_prob_osci - confi_bound_osci, error_prob_osci + confi_bound_osci, alpha=0.4)
         axs[0, 1].plot(move_gaps, error_prob_period, 'o-', label=algo)
         axs[0, 1].fill_between(move_gaps, error_prob_period - confi_bound_period, error_prob_period + confi_bound_period, alpha=0.4)
-        axs[1, 0].plot(osci_mags, min_gaps_osci, 'o-')
-        axs[1, 1].plot(move_gaps, min_gaps_period, 'o-')
-    axs[1, 0].set_xlabel('oscillation scale')
-    axs[1, 1].set_xlabel('oscillation period')
+        if j == 0:
+            axs[1, 0].plot(osci_mags, min_gaps_osci, 'o-', color='black', label='minimum gap')
+            axs[1, 1].plot(move_gaps, min_gaps_period, 'o-', color='black')
+    axs[1, 0].set_xlabel('oscillation scale ($s$)')
+    axs[1, 1].set_xlabel('oscillation period ($L$)')
     axs[0, 0].set_ylabel('error probability')
     axs[1, 0].set_ylabel('minimum gap')
     axs[0, 0].set_title('Error Probability vs. Oscillation Scale')
     axs[0, 1].set_title('Error Probability vs. Oscillation Period')
-    axs[1, 0].set_title('Minimum Gap vs. Oscillation Scale')
-    axs[1, 1].set_title('Minimum Gap vs. Oscillation Period')
+    axs[1, 0].legend(loc='best')
     for i in range(2):
         axs[0, i].set_ylim([-0.05, 1.05])
         # axs[0, i].set_yscale('log')
         axs[0, i].grid(True)
-    axs[0, 0].legend(loc='lower left', bbox_to_anchor=(0.1,0), bbox_transform=fig.transFigure, ncol=len(algos))
+    axs[0, 0].legend(loc='lower left', bbox_to_anchor=(0.15,0), bbox_transform=fig.transFigure, ncol=len(algos))
     axs[1, 0].grid(True)
     axs[1, 1].grid(True)
 
