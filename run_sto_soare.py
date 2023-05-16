@@ -28,8 +28,7 @@ def run_change_T(algos, n_trials=1000, save=True):
     d = 10
     omega = 0.1
     noise_level = 1.0
-    Ts = np.array([10 + 1000 * i for i in range(10)])
-    # Ts = [1000, 3000, 6000, 9000]
+    Ts = np.array([10 + 1000 * i for i in range(7)])
 
     results_total = np.zeros((len(algos), len(Ts), n_trials))
     min_gaps = np.zeros(len(Ts))
@@ -80,7 +79,7 @@ if __name__ == '__main__':
     run = args.run
 
     save = True
-    n_trials = 1000
+    n_trials = 10000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
@@ -89,4 +88,4 @@ if __name__ == '__main__':
             print(f"{algo} Oscillation magnitude accuracy: {np.mean(results[j], axis=1)}")
         print(f"Oscillation magnitude minimum gaps: {min_gaps}")
 
-    get_plot(algos)
+    # get_plot(algos)
