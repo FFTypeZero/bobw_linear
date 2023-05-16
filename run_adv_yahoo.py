@@ -43,7 +43,7 @@ def run_change_duration(algos, n_trials=1000, save=True):
             if save:
                 if not os.path.exists(f'plot_data/{algo}'):
                     os.makedirs(f'plot_data/{algo}')
-                np.savez_compressed(f'plot_data/{algo}/{algo}_results_yahoo_repeat.npz', 
+                np.savez_compressed(f'plot_data/{algo}/{algo}_results_yahoo_pca_repeat.npz', 
                                     results=results_total[j], durations=durations, min_gaps=min_gaps)
 
     return results_total, min_gaps
