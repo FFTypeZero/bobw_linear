@@ -79,8 +79,8 @@ if __name__ == '__main__':
 
     save = True
     n_trials = 1000
-    # algos = ['Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
-    algos = ['G-BAI']
+    # algos = ['Peace', 'P1-Peace', 'P1-RAGE', 'Mixed-Peace']
+    algos = ['G-BAI', 'OD-LinBAI']
 
     if run:
         results_duration, min_gaps_duration = run_change_duration(algos, n_trials, save)
