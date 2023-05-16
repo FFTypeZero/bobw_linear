@@ -79,8 +79,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     run = args.run
 
-    save = False
-    n_trials = 50
+    save = True
+    n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
