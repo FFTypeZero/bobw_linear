@@ -105,7 +105,7 @@ def add_perturbation_multi(X, theta_stars, osci_mag, move_gap):
     return thetas
 
 
-def run_change_osci(algos, n_trials=1000):
+def run_change_osci(algos, n_trials=1000, save=True):
     T = 10000
     noise_level = 0.3
     osci_mags = [1.0 * i for i in range(10)]
@@ -130,18 +130,19 @@ def run_change_osci(algos, n_trials=1000):
         min_gaps[i] = gap
 
         for j, algo in enumerate(algos):
-            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
+            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, n_workers=6, setting_para=osci_mag)
             results_total[j][i] = np.array(results)
 
-            if not os.path.exists(f'plot_data/{algo}'):
-                os.makedirs(f'plot_data/{algo}')
-            np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_osci2.npz', 
-                                results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
+            if save:
+                if not os.path.exists(f'plot_data/{algo}'):
+                    os.makedirs(f'plot_data/{algo}')
+                np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_osci.npz', 
+                                    results=results_total[j], osci_mags=osci_mags, min_gaps=min_gaps)
 
     return results_total, min_gaps
 
 
-def run_change_period(algos, n_trials=1000):
+def run_change_period(algos, n_trials=1000, save=True):
     T = 10000
     noise_level = 0.3
     osci_mag = 2.0
@@ -166,13 +167,14 @@ def run_change_period(algos, n_trials=1000):
         min_gaps[i] = gap
 
         for j, algo in enumerate(algos):
-            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
+            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, n_workers=6, setting_para=move_gap)
             results_total[j][i] = np.array(results)
 
-            if not os.path.exists(f'plot_data/{algo}'):
-                os.makedirs(f'plot_data/{algo}')
-            np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_period2.npz', 
-                                results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
+            if save:
+                if not os.path.exists(f'plot_data/{algo}'):
+                    os.makedirs(f'plot_data/{algo}')
+                np.savez_compressed(f'plot_data/{algo}/{algo}_results_multi_period.npz', 
+                                    results=results_total[j], move_gaps=move_gaps, min_gaps=min_gaps)
 
     return results_total, min_gaps
 
@@ -180,8 +182,8 @@ def run_change_period(algos, n_trials=1000):
 def get_plot(algos):
     fig, axs = plt.subplots(2, 2)
     for algo in algos:
-        loaded_osci = np.load(f'plot_data/{algo}/{algo}_results_multi_osci2.npz')
-        loaded_period = np.load(f'plot_data/{algo}/{algo}_results_multi_period2.npz')
+        loaded_osci = np.load(f'plot_data/{algo}/{algo}_results_multi_osci.npz')
+        loaded_period = np.load(f'plot_data/{algo}/{algo}_results_multi_period.npz')
         results_osci = loaded_osci['results']
         results_period = loaded_period['results']
         osci_mags = loaded_osci['osci_mags']
@@ -227,12 +229,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
     run = args.run
 
+    save = True
     n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
-        results_osci, min_gaps_osci = run_change_osci(algos, n_trials)
-        results_period, min_gaps_period = run_change_period(algos, n_trials)
+        results_osci, min_gaps_osci = run_change_osci(algos, n_trials, save)
+        results_period, min_gaps_period = run_change_period(algos, n_trials, save)
         for j, algo in enumerate(algos):
             print(f"{algo} Oscillation magnitude accuracy: {np.mean(results_osci[j], axis=1)}")
         print(f"Oscillation magnitude minimum gaps: {min_gaps_osci}")

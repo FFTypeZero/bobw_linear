@@ -6,8 +6,8 @@ from algorithms.p1_linear import P1_Linear
 from algorithms.od_linbai import OD_LinBAI
 
 
-def single_trial(trial_id, X, T, thetas, opt_arm, algo, noise_level=1.0):
-    print(f"Trial {trial_id} started.")
+def single_trial(trial_id, X, T, thetas, opt_arm, algo, noise_level=1.0, setting_para='None'):
+    print(f"Setting {setting_para}, Algorithm {algo}, trial {trial_id} started.")
     
     reward_func = lambda x, t: np.random.normal(x@thetas[t], noise_level)
     if algo == 'G-BAI':
@@ -29,16 +29,16 @@ def single_trial(trial_id, X, T, thetas, opt_arm, algo, noise_level=1.0):
     else:
         result = 0
         print("incorrect! recommendation = {}".format(recommendation))
-    print(f"Trial {trial_id} finished with result {result}.")
+    print(f"Setting {setting_para}, Algorithm {algo}, trial {trial_id} finished with result {result}.")
     return result
 
 
-def run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level=1.0, n_workers=None):
+def run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level=1.0, n_workers=None, setting_para='None'):
     if n_workers is None:
         n_workers = min(n_trials, 4) 
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
-        futures = {executor.submit(single_trial, i, X, T, thetas, opt_arm, algo, noise_level): i for i in range(n_trials)}
+        futures = {executor.submit(single_trial, i, X, T, thetas, opt_arm, algo, noise_level, setting_para): i for i in range(n_trials)}
 
         results = []
         for future in concurrent.futures.as_completed(futures):
@@ -60,8 +60,7 @@ def compute_gap(X, thetas):
     vals = X @ thetas.T
     ave_vals = np.mean(vals, axis=1)
     opt_arm = np.argmax(ave_vals)
-    print(f'optimal arm: {opt_arm}')
     ave_vals = np.sort(ave_vals)
     gap = ave_vals[-1] - ave_vals[-2]
-    print(f"Gap: {gap}")
+    print(f"optimal arm: {opt_arm}, Gap: {gap}")
     return gap, opt_arm

@@ -4,8 +4,8 @@ from algorithms.fw import fw_XY
 
 
 class OD_LinBAI(BAI_Base):
-    def __init__(self, X, T, reward_func) -> None:
-        super().__init__(X, T, reward_func)
+    def __init__(self, X, T, reward_func, verbose=False) -> None:
+        super().__init__(X, T, reward_func, verbose)
 
     def run(self):
         A_r = self.X
@@ -21,7 +21,8 @@ class OD_LinBAI(BAI_Base):
 
         t = 0
         for r in range(1, num_epochs + 1):
-            print(f"OD-LinBAI epoch {r}/{num_epochs}")
+            if self.verbose:
+                print(f"OD-LinBAI epoch {r}/{num_epochs}")
 
             ds[r] = np.linalg.matrix_rank(A_r).astype(int)
             if ds[r] < ds[r - 1]:

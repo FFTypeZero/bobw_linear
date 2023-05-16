@@ -3,23 +3,24 @@ from algorithms.fw import fw_XY
 
 
 class BAI_Base:
-    def __init__(self, X, T, reward_func) -> None:
+    def __init__(self, X, T, reward_func, verbose=False) -> None:
         self.X = X
         self.reward_func = reward_func
         self.n = X.shape[0]
         self.d = X.shape[1]
         self.T = T
+        self.verbose = verbose
 
     def run(self):
         pass
 
 
 class BAI_G_Design(BAI_Base):
-    def __init__(self, X, T, reward_func) -> None:
+    def __init__(self, X, T, reward_func, verbose=False) -> None:
+        super().__init__(X, T, reward_func, verbose)
+
         self.G_design = fw_XY(X, X)[0]
-        print("G_design computation complete.")
         self.Sigma = X.T @ np.diag(self.G_design) @ X
-        super().__init__(X, T, reward_func)
 
     def run(self):
         theta_hat_t = np.zeros(self.d)
@@ -30,7 +31,7 @@ class BAI_G_Design(BAI_Base):
             target_t = self.X[i_t] * r_t
             theta_hat_s = Sigma_inv @ target_t
             theta_hat_t = (theta_hat_t * t + theta_hat_s) / (t + 1)
-            if t % 5000 == 0:
+            if t % 5000 == 0 and self.verbose:
                 print("G-BAI: t = {}".format(t))
         recommendation = np.argmax(self.X @ theta_hat_t)
         return self.X[recommendation]

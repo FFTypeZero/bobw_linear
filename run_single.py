@@ -28,7 +28,7 @@ def get_malicious_instance(d, T, omega):
     return X, thetas
 
 
-def run_malicious(algos, n_trials=1000):
+def run_malicious(algos, n_trials=1000, save=True):
     d = 10
     omega = 0.5
     T = 10000
@@ -42,18 +42,19 @@ def run_malicious(algos, n_trials=1000):
     gap, opt_arm = compute_gap(X, thetas)
 
     for j, algo in enumerate(algos):
-        results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
+        results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, n_workers=6)
         results_total[j] = np.array(results)
 
-        if not os.path.exists(f'plot_data/Single'):
-            os.makedirs(f'plot_data/Single')
-        np.savez_compressed(f'plot_data/Single/single_results_malicious.npz', 
-                            results=results_total, algos=algos)
+        if save:
+            if not os.path.exists(f'plot_data/Single'):
+                os.makedirs(f'plot_data/Single')
+            np.savez_compressed(f'plot_data/Single/single_results_malicious.npz', 
+                                results=results_total, algos=algos)
 
     return results_total
 
 
-def run_sto_multi(algos, n_trials=1000):
+def run_sto_multi(algos, n_trials=1000, save=True):
     T = 10000
     noise_level = 0.3
     D = 4
@@ -66,13 +67,14 @@ def run_sto_multi(algos, n_trials=1000):
     gap, opt_arm = compute_gap(X, thetas)
 
     for j, algo in enumerate(algos):
-        results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, 6)
+        results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, n_workers=6)
         results_total[j] = np.array(results)
 
-        if not os.path.exists(f'plot_data/Single'):
-            os.makedirs(f'plot_data/Single')
-        np.savez_compressed(f'plot_data/Single/single_results_multi.npz', 
-                            results=results_total, algos=algos)
+        if save:
+            if not os.path.exists(f'plot_data/Single'):
+                os.makedirs(f'plot_data/Single')
+            np.savez_compressed(f'plot_data/Single/single_results_multi.npz', 
+                                results=results_total, algos=algos)
 
     return results_total
 
@@ -101,12 +103,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
     run = args.run
 
+    save = True
     n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
-        results_malicious = run_malicious(algos, n_trials)
-        results_multi = run_sto_multi(algos, n_trials)
+        results_malicious = run_malicious(algos, n_trials, save)
+        results_multi = run_sto_multi(algos, n_trials, save)
         for j, algo in enumerate(algos):
             print(f"{algo} malicious accuracy: {np.mean(results_malicious[j])}")
         for j, algo in enumerate(algos):

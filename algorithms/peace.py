@@ -4,11 +4,11 @@ from algorithms.fw import fw_XY
 
 
 class Peace(BAI_Base):
-    def __init__(self, X, T, reward_func, bobw=False, reg=.1) -> None:
+    def __init__(self, X, T, reward_func, bobw=False, verbose=False, reg=.1) -> None:
+        super().__init__(X, T, reward_func, verbose)
         self.reg = reg
         self.bobw = bobw
         self.G_design = fw_XY(X, X)[0]
-        super().__init__(X, T, reward_func)
 
     def __fw_XXi(self, X, X_i):
         N_i = X_i.shape[0]
@@ -69,13 +69,15 @@ class Peace(BAI_Base):
         rho_start = self.__fw_XXi(self.X, self.X)[1]
         num_epoches = int(np.ceil(np.log2(rho_start)))
         epoch_length = int(np.floor(self.T / num_epoches))
-        print("Peace: num_epoches = {}, epoch_length = {}".format(num_epoches, epoch_length))
+        if self.verbose:
+            print("Peace: num_epoches = {}, epoch_length = {}".format(num_epoches, epoch_length))
 
         X_i = self.X
         t = 0
         for epoch in range(num_epoches):
             # Compute design and allocation
-            print("Peace: Epoch {}/{}".format(epoch + 1, num_epoches))
+            if self.verbose:
+                print("Peace: Epoch {}/{}".format(epoch + 1, num_epoches))
             design_i, rho_i = self.__fw_XXi(self.X, X_i)
             if epoch < num_epoches - 1:
                 allocation_i = self.__rounding(design_i, epoch_length)
@@ -106,19 +108,21 @@ class Peace(BAI_Base):
 
     def bobw_run(self):
         """
-        Modified Peace for both stochastic and adversarial environments
+        Mixed Peace for both stochastic and adversarial environments
         """
         rho_start = self.__fw_XXi(self.X, self.X)[1]
         num_epoches = int(np.ceil(np.log2(rho_start)))
         epoch_length = int(np.floor(self.T / num_epoches))
-        print("Modified Peace: num_epoches = {}, epoch_length = {}".format(num_epoches, epoch_length))
+        if self.verbose:
+            print("Mixed Peace: num_epoches = {}, epoch_length = {}".format(num_epoches, epoch_length))
 
         X_i = self.X
         theta_hat_t = np.zeros(self.d)
         t = 0
         for epoch in range(num_epoches):
             # Compute design and mix it with G_design
-            print("Modified Peace: Epoch {}/{}".format(epoch + 1, num_epoches))
+            if self.verbose:
+                print("Modified Peace: Epoch {}/{}".format(epoch + 1, num_epoches))
             sto_design_i, rho_i = self.__fw_XXi(self.X, X_i)
             design_i = (sto_design_i + self.G_design) / 2
 

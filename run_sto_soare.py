@@ -24,7 +24,7 @@ def get_soare_instance(d, T, omega):
     return X, thetas
 
 
-def run_change_T(algos, n_trials=1000):
+def run_change_T(algos, n_trials=1000, save=True):
     d = 10
     omega = 0.1
     noise_level = 1.0
@@ -40,13 +40,14 @@ def run_change_T(algos, n_trials=1000):
         min_gaps[i] = gap
 
         for j, algo in enumerate(algos):
-            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, n_workers=6)
+            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, n_workers=6, setting_para=T)
             results_total[j][i] = np.array(results)
 
-            if not os.path.exists(f'plot_data/{algo}'):
-                os.makedirs(f'plot_data/{algo}')
-            np.savez_compressed(f'plot_data/{algo}/{algo}_results_soare_sto.npz', 
-                                results=results_total[j], Ts=Ts, min_gaps=min_gaps)
+            if save:
+                if not os.path.exists(f'plot_data/{algo}'):
+                    os.makedirs(f'plot_data/{algo}')
+                np.savez_compressed(f'plot_data/{algo}/{algo}_results_soare_sto.npz', 
+                                    results=results_total[j], Ts=Ts, min_gaps=min_gaps)
 
     return results_total, min_gaps
 
@@ -77,11 +78,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
     run = args.run
 
+    save = True
     n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
-        results, min_gaps = run_change_T(algos, n_trials)
+        results, min_gaps = run_change_T(algos, n_trials, save)
         for j, algo in enumerate(algos):
             print(f"{algo} Oscillation magnitude accuracy: {np.mean(results[j], axis=1)}")
         print(f"Oscillation magnitude minimum gaps: {min_gaps}")

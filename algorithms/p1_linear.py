@@ -5,7 +5,8 @@ from algorithms.fw import fw_XY
 
 
 class P1_Linear(BAI_Base):
-    def __init__(self, X, T, reward_func, batch=False, alt=False, subroutine_max_iter=15) -> None:
+    def __init__(self, X, T, reward_func, batch=False, alt=False, subroutine_max_iter=1, verbose=False) -> None:
+        super().__init__(X, T, reward_func, verbose)
         self.G_design = fw_XY(X, X)[0]
         self.max_iter = subroutine_max_iter
         self.alt = alt
@@ -16,7 +17,6 @@ class P1_Linear(BAI_Base):
             self.rho_vals = np.zeros(self.n)
             self.design_vals = np.zeros((self.n, self.n))
             self.computed = np.zeros(self.n)
-        super().__init__(X, T, reward_func)
 
     def __fw_XXi(self, X, X_i):
         N_i = X_i.shape[0]
@@ -51,7 +51,8 @@ class P1_Linear(BAI_Base):
             n_i = X_i.shape[0] - 1
 
         design_out = design_bar / (2 * i_count) + self.G_design / 2
-        print("P1_Linear: RAGE_Elimination rounds = {}".format(i_count))
+        if self.verbose:
+            print("P1_Linear: RAGE_Elimination rounds = {}".format(i_count))
         return design_out
 
     def __eliminate_Xi(self, threshold, X_i):
@@ -116,7 +117,8 @@ class P1_Linear(BAI_Base):
             n_i = X_i.shape[0]
 
         design_out = design_bar / (2 * i_count) + self.G_design / 2
-        print("P1_Linear: Peace_Elimination rounds = {}".format(i_count))
+        if self.verbose:
+            print("P1_Linear: Peace_Elimination rounds = {}".format(i_count))
         return design_out
 
     def run(self):
@@ -140,11 +142,13 @@ class P1_Linear(BAI_Base):
             if self.batch and t % epoch_length != 0:
                 continue
             if self.alt:
-                print(f"P1_Linear: starts round {t} Peace_Elimination.")
+                if self.verbose:
+                    print(f"P1_Linear: starts round {t} Peace_Elimination.")
                 design_t = self.peace_elimination(theta_hat_t)
                 Sigma_t_inv = np.linalg.pinv(self.X.T@np.diag(design_t)@self.X)
             else:
-                print(f"P1_Linear: starts round {t} RAGE_Elimination.")
+                if self.verbose:
+                    print(f"P1_Linear: starts round {t} RAGE_Elimination.")
                 design_t = self.rage_elimination(theta_hat_t)
                 Sigma_t_inv = np.linalg.pinv(self.X.T@np.diag(design_t)@self.X)
         recommendation = np.argmax(self.X@theta_hat_t)
