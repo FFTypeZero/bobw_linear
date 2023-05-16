@@ -51,7 +51,7 @@ def run_change_duration(algos, n_trials=1000, save=True):
 def get_plot(algos):
     fig, axs = plt.subplots(1, 1)
     for algo in algos:
-        loaded = np.load(f'plot_data/{algo}/{algo}_results_yahoo_repeat.npz')
+        loaded = np.load(f'plot_data/{algo}/{algo}_results_yahoo_pca_repeat.npz')
         results = loaded['results']
         durations = loaded['durations']
 
@@ -79,8 +79,8 @@ if __name__ == '__main__':
 
     save = True
     n_trials = 1000
-    # algos = [G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
-    algos = ['Peace', 'P1-Peace']
+    algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
+    # algos = ['G-BAI', 'Peace', 'P1-Peace', 'OD-LinBAI']
 
     if run:
         results_duration, min_gaps_duration = run_change_duration(algos, n_trials, save)
