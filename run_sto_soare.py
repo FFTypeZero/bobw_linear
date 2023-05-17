@@ -62,7 +62,7 @@ def get_plot(algos):
         confi_bound = 1.96 * np.std(results, axis=1) / np.sqrt(results.shape[1])
         axs.plot(Ts, error_prob, 'o-', label=algo)
         axs.fill_between(Ts, error_prob - confi_bound, error_prob + confi_bound, alpha=0.4)
-    axs.set_xlabel('$T$')
+    axs.set_xlabel('budget ($T$)')
     axs.set_ylabel('error probability')
     axs.set_yscale('log')
     axs.set_title("Error Probability vs. $T$ Under Soare et al. (2014)'s Example")
