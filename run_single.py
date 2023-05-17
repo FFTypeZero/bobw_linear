@@ -106,16 +106,16 @@ if __name__ == '__main__':
     run = args.run
 
     save = True
-    n_trials = 1000
+    n_trials = 10000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
-        results_malicious = run_malicious(algos, n_trials, save)
+        # results_malicious = run_malicious(algos, n_trials, save)
         results_multi = run_sto_multi(algos, n_trials, save)
-        for j, algo in enumerate(algos):
-            print(f"{algo} malicious accuracy: {np.mean(results_malicious[j])}")
+        # for j, algo in enumerate(algos):
+            # print(f"{algo} malicious accuracy: {np.mean(results_malicious[j])}")
         for j, algo in enumerate(algos):
             print(f"{algo} multi accuracy: {np.mean(results_multi[j])}")
     
-    get_plot('malicious', 'Experiments under Malicious Example')
+    # get_plot('malicious', 'Experiments under Malicious Example')
     get_plot('multi', 'Experiments under Stationary Multivariate Testing Example')
