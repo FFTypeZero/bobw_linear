@@ -9,6 +9,7 @@ from utils import run_trials_in_parallel, compute_gap
 def get_sto_multi(D, T, num_sparse=None):
     """
     Multivariate testing example from Fiez et al. (2019)
+    Code from https://github.com/fiezt/Transductive-Linear-Bandit-Code
     """
     alpha1 = 1
     alpha2 = 0.5

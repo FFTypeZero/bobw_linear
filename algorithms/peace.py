@@ -26,6 +26,7 @@ class Peace(BAI_Base):
     def __rounding(self, design, num_samples):        
         '''
         Routine to convert design to allocation over num_samples following rounding procedures in Pukelsheim.
+        Code from https://github.com/jkatzsam/linear_bandits_empirical_process
         '''
         num_support = (design > 0).sum()
         support_idx = np.where(design > 0)[0]
