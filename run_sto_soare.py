@@ -85,7 +85,7 @@ if __name__ == '__main__':
     if run:
         results, min_gaps = run_change_T(algos, n_trials, save)
         for j, algo in enumerate(algos):
-            print(f"{algo} Oscillation magnitude accuracy: {np.mean(results[j], axis=1)}")
-        print(f"Oscillation magnitude minimum gaps: {min_gaps}")
+            print(f"{algo} accuracy: {np.mean(results[j], axis=1)}")
+        print(f"Minimum gaps: {min_gaps}")
 
     get_plot(algos)
