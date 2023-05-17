@@ -64,7 +64,7 @@ def get_plot(algos):
     axs.set_ylabel('error probability')
     # axs.set_ylim([-0.05, 1.05])
     axs.set_yscale('log')
-    axs.legend(loc='best')
+    axs.legend(loc=(0.65, 0.55))
     axs.grid(True)
     axs.set_title('Experiments under Yahoo! News Article Example')
 

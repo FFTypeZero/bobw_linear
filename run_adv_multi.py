@@ -180,7 +180,7 @@ def run_change_period(algos, n_trials=1000, save=True):
 
 
 def get_plot(algos):
-    fig, axs = plt.subplots(2, 2, gridspec_kw={'height_ratios': [2, 1]}, figsize=(11, 7.5))
+    fig, axs = plt.subplots(2, 2, gridspec_kw={'height_ratios': [2.3, 1]}, figsize=(11, 7.1))
     for j, algo in enumerate(algos):
         loaded_osci = np.load(f'plot_data/{algo}/{algo}_results_multi_osci.npz')
         loaded_period = np.load(f'plot_data/{algo}/{algo}_results_multi_period.npz')
