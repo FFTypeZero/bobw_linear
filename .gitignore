@@ -493,3 +493,5 @@ vignettes/*.pdf
 .vscode/
 *.DESKTOP-T775K6F
 plot_func.py
+yahoo_data.npz
+yahoo_data_pca.npz
