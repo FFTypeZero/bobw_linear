@@ -129,7 +129,7 @@ def get_plot(algos):
     axs[1, 0].grid(True)
     axs[1, 1].grid(True)
 
-    plt.suptitle("Experiments under Non-stationary Soare et al. (2014)'s Example")
+    # plt.suptitle("Experiments under Non-stationary Soare et al. (2014)'s Example")
     plt.show()
 
 

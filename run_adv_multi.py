@@ -182,8 +182,8 @@ def run_change_period(algos, n_trials=1000, save=True):
 def get_plot(algos):
     fig, axs = plt.subplots(2, 2, gridspec_kw={'height_ratios': [2, 1]}, figsize=(11, 7.5))
     for j, algo in enumerate(algos):
-        loaded_osci = np.load(f'plot_data/{algo}/{algo}_results_multi_osci2.npz')
-        loaded_period = np.load(f'plot_data/{algo}/{algo}_results_multi_period2.npz')
+        loaded_osci = np.load(f'plot_data/{algo}/{algo}_results_multi_osci.npz')
+        loaded_period = np.load(f'plot_data/{algo}/{algo}_results_multi_period.npz')
         results_osci = loaded_osci['results']
         results_period = loaded_period['results']
         osci_mags = loaded_osci['osci_mags']
@@ -218,7 +218,7 @@ def get_plot(algos):
     axs[1, 0].grid(True)
     axs[1, 1].grid(True)
 
-    plt.suptitle("Experiments under Non-stationary Multivariate Testing Example")
+    # plt.suptitle("Experiments under Non-stationary Multivariate Testing Example")
     plt.show()
 
 
