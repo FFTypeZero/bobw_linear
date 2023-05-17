@@ -53,7 +53,7 @@ def run_change_T(algos, n_trials=1000, save=True):
 
 
 def get_plot(algos):
-    fig, axs = plt.subplots(1, 1)
+    fig, axs = plt.subplots(1, 1, figsize=(6, 5))
     for algo in algos:
         loaded = np.load(f'plot_data/{algo}/{algo}_results_soare_sto.npz')
         results = loaded['results']
@@ -88,4 +88,4 @@ if __name__ == '__main__':
             print(f"{algo} Oscillation magnitude accuracy: {np.mean(results[j], axis=1)}")
         print(f"Oscillation magnitude minimum gaps: {min_gaps}")
 
-    # get_plot(algos)
+    get_plot(algos)

@@ -85,12 +85,14 @@ def get_plot(case, title):
     algos = loaded['algos']
     error_prob = 1.0 - np.mean(results, axis=1)
     confi_bound = 1.96 * np.std(results, axis=1) / np.sqrt(results.shape[1])
-    for i in range(len(algos)):
-        rects1 = plt.bar(i, error_prob[i], width=0.5, alpha=0.8, yerr=confi_bound[i], capsize=7)
 
-    plt.ylabel('error probability')
-    plt.xticks(range(len(algos)), algos)
-    plt.title(title)
+    fig, axs = plt.subplots(1, 1, figsize=(6, 4))
+    for i in range(len(algos)):
+        rects1 = axs.bar(i, error_prob[i], width=0.5, alpha=0.8, yerr=confi_bound[i], capsize=7)
+
+    axs.set_ylabel('error probability')
+    axs.set_xticks(range(len(algos)), algos)
+    axs.set_title(title)
 
     plt.tight_layout()
     plt.show()

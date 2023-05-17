@@ -49,7 +49,7 @@ def run_change_duration(algos, n_trials=1000, save=True):
     return results_total, min_gaps
 
 def get_plot(algos):
-    fig, axs = plt.subplots(1, 1)
+    fig, axs = plt.subplots(1, 1, figsize=(6, 5))
     for algo in algos:
         loaded = np.load(f'plot_data/{algo}/{algo}_results_yahoo_pca_repeat.npz')
         results = loaded['results']

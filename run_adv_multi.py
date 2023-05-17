@@ -211,8 +211,8 @@ def get_plot(algos):
     axs[0, 1].set_title('Error Probability vs. Oscillation Period')
     axs[1, 0].legend(loc='best')
     for i in range(2):
-        axs[0, i].set_ylim([-0.05, 1.05])
-        # axs[0, i].set_yscale('log')
+        # axs[0, i].set_ylim([-0.05, 1.05])
+        axs[0, i].set_yscale('log')
         axs[0, i].grid(True)
     axs[0, 0].legend(loc='lower left', bbox_to_anchor=(0.15,0), bbox_transform=fig.transFigure, ncol=len(algos))
     axs[1, 0].grid(True)
