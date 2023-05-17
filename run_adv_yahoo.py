@@ -60,9 +60,10 @@ def get_plot(algos):
 
         axs.plot(durations, error_prob, 'o-', label=algo)
         axs.fill_between(durations, error_prob - confi_bound, error_prob + confi_bound, alpha=0.4)
-    axs.set_xlabel('repeat durations')
+    axs.set_xlabel('repeat durations ($L$)')
     axs.set_ylabel('error probability')
-    axs.set_ylim([-0.05, 1.05])
+    # axs.set_ylim([-0.05, 1.05])
+    axs.set_yscale('log')
     axs.legend(loc='best')
     axs.grid(True)
     axs.set_title('Experiments under Yahoo! News Article Example')
@@ -80,7 +81,6 @@ if __name__ == '__main__':
     save = True
     n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
-    # algos = ['G-BAI', 'Peace', 'P1-Peace', 'OD-LinBAI']
 
     if run:
         results_duration, min_gaps_duration = run_change_duration(algos, n_trials, save)
