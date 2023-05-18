@@ -1,4 +1,5 @@
 import os
+import time
 import argparse
 import itertools
 import numpy as np
@@ -234,6 +235,7 @@ if __name__ == '__main__':
     n_trials = 1000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
+    start_time = time.time()
     if run:
         results_osci, min_gaps_osci = run_change_osci(algos, n_trials, save)
         results_period, min_gaps_period = run_change_period(algos, n_trials, save)
@@ -244,4 +246,6 @@ if __name__ == '__main__':
             print(f"{algo} Oscillation period accuracy: {np.mean(results_period[j], axis=1)}")
         print(f"Oscillation period minimum gaps: {min_gaps_period}")
 
+    end_time = time.time()
+    print(f"Total running time: {end_time - start_time}")
     get_plot(algos)
