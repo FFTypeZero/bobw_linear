@@ -13,9 +13,9 @@ def single_trial(trial_id, X, T, thetas, opt_arm, algo, noise_level=1.0, setting
     if algo == 'G-BAI':
         recommendation = BAI_G_Design(X, T, reward_func).run()
     elif algo == 'Peace':
-        recommendation = Peace(X, T, reward_func).run()
+        recommendation = Peace(X, T, reward_func, mixed=False).run()
     elif algo == 'Mixed-Peace':
-        recommendation = Peace(X, T, reward_func, bobw=True).run()
+        recommendation = Peace(X, T, reward_func, mixed=True).run()
     elif algo == 'P1-RAGE':
         recommendation = P1_Linear(X, T, reward_func, batch=True, alt=False, subroutine_max_iter=15).run()
     elif algo == 'P1-Peace':

@@ -4,10 +4,9 @@ from algorithms.fw import fw_XY
 
 
 class Peace(BAI_Base):
-    def __init__(self, X, T, reward_func, bobw=False, verbose=False, reg=.1) -> None:
+    def __init__(self, X, T, reward_func, mixed=False, verbose=False) -> None:
         super().__init__(X, T, reward_func, verbose)
-        self.reg = reg
-        self.bobw = bobw
+        self.mixed = mixed
         self.G_design = fw_XY(X, X)[0]
 
     def __fw_XXi(self, X, X_i):
@@ -65,7 +64,7 @@ class Peace(BAI_Base):
 
     def sto_run(self):
         """
-        Peace for stochastic environment
+        Peace for stationary environments
         """
         rho_start = self.__fw_XXi(self.X, self.X)[1]
         num_epoches = int(np.ceil(np.log2(rho_start)))
@@ -107,9 +106,9 @@ class Peace(BAI_Base):
         recommendation = np.argmax(X_i@theta_hat_i)
         return X_i[recommendation]
 
-    def bobw_run(self):
+    def mixed_run(self):
         """
-        Mixed Peace for both stochastic and adversarial environments
+        Mixed Peace for non-stationary environments
         """
         rho_start = self.__fw_XXi(self.X, self.X)[1]
         num_epoches = int(np.ceil(np.log2(rho_start)))
@@ -150,8 +149,8 @@ class Peace(BAI_Base):
         return self.X[recommendation]
 
     def run(self):
-        if self.bobw:
-            return self.bobw_run()
+        if self.mixed:
+            return self.mixed_run()
         else:
             return self.sto_run()
 
@@ -174,7 +173,7 @@ if __name__ == '__main__':
     num_correct = 0
     for _ in range(num_trials):
         print("Trial {}/{}".format(_ + 1, num_trials))
-        recommendation = Peace(X, T, reward_func, bobw=False).run()
+        recommendation = Peace(X, T, reward_func, mixed=False).run()
         if np.all(recommendation == X[0]):
             num_correct += 1
         else:

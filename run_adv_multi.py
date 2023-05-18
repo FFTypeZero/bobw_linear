@@ -77,6 +77,9 @@ def get_sto_multi(D, T, num_sparse=None):
 
 
 def add_perturbation_multi(X, theta_stars, osci_mag, move_gap):
+    """
+    Add periodic perturbation to thetas
+    """
     T, num_features = theta_stars.shape
     theta_star = theta_stars[0]
 
