@@ -2,7 +2,7 @@ import os
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import run_trials_in_parallel, compute_gap
+from utils import run_trials_in_parallel_soare, compute_gap
 
 
 def get_soare_instance(d, T, omega):
@@ -40,14 +40,16 @@ def run_change_T(algos, n_trials=1000, save=True):
         min_gaps[i] = gap
 
         for j, algo in enumerate(algos):
-            results = run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level, n_workers=6, setting_para=T)
+            saving_dir = f'plot_data/{algo}/soare_sto'
+            saving_file = f'{saving_dir}/results_T={T}.npz'
+            results = run_trials_in_parallel_soare(n_trials, X, T, thetas, opt_arm, algo, saving_dir, saving_file, save=save, noise_level=noise_level, n_workers=6, setting_para=T)
             results_total[j][i] = np.array(results)
 
-            if save:
-                if not os.path.exists(f'plot_data/{algo}'):
-                    os.makedirs(f'plot_data/{algo}')
-                np.savez_compressed(f'plot_data/{algo}/{algo}_results_soare_sto.npz', 
-                                    results=results_total[j], Ts=Ts, min_gaps=min_gaps)
+            # if save:
+            #     if not os.path.exists(f'plot_data/{algo}'):
+            #         os.makedirs(f'plot_data/{algo}')
+            #     np.savez_compressed(f'plot_data/{algo}/{algo}_results_soare_sto.npz', 
+            #                         results=results_total[j], Ts=Ts, min_gaps=min_gaps)
 
     return results_total, min_gaps
 
@@ -55,9 +57,18 @@ def run_change_T(algos, n_trials=1000, save=True):
 def get_plot(algos):
     fig, axs = plt.subplots(1, 1, figsize=(6, 5))
     for algo in algos:
-        loaded = np.load(f'plot_data/{algo}/{algo}_results_soare_sto.npz')
-        results = loaded['results']
-        Ts = loaded['Ts']
+        # loaded = np.load(f'plot_data/{algo}/{algo}_results_soare_sto.npz')
+        # results = loaded['results']
+        # Ts = loaded['Ts']
+        Ts = []
+        results = []
+        for file in os.listdir(f'plot_data/{algo}/soare_sto'):
+            if file.endswith('.npz'):
+                loaded = np.load(f'plot_data/{algo}/soare_sto/{file}')
+                results.append(loaded['results'])
+                Ts.append(loaded['T'])
+        results = np.array(results)
+        Ts = np.array(Ts)
         error_prob = 1.0 - np.mean(results, axis=1)
         confi_bound = 1.96 * np.std(results, axis=1) / np.sqrt(results.shape[1])
         axs.plot(Ts, error_prob, 'o-', label=algo)

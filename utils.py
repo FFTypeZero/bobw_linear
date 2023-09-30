@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import concurrent.futures
 from algorithms.g_bai import BAI_G_Design
@@ -46,6 +47,42 @@ def run_trials_in_parallel(n_trials, X, T, thetas, opt_arm, algo, noise_level=1.
             try:
                 result = future.result()
                 results.append(result)
+            except Exception as exc:
+                print(f"Trial {trial_id} generated an exception: {exc}")
+            else:
+                print(f"Trial {trial_id} completed successfully.")
+
+    return results
+
+
+def run_trials_in_parallel_soare(n_trials, 
+                                 X, 
+                                 T, 
+                                 thetas, 
+                                 opt_arm, 
+                                 algo, 
+                                 saving_dir, 
+                                 saving_file, 
+                                 save=True, 
+                                 noise_level=1.0, 
+                                 n_workers=None, 
+                                 setting_para='None'):
+    if n_workers is None:
+        n_workers = min(n_trials, 4) 
+
+    with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
+        futures = {executor.submit(single_trial, i, X, T, thetas, opt_arm, algo, noise_level, setting_para): i for i in range(n_trials)}
+
+        results = []
+        if not os.path.exists(saving_dir) and save:
+            os.makedirs(saving_dir)
+        for future in concurrent.futures.as_completed(futures):
+            trial_id = futures[future]
+            try:
+                result = future.result()
+                results.append(result)
+                if save:
+                    np.savez_compressed(saving_file, results=results, T=T)
             except Exception as exc:
                 print(f"Trial {trial_id} generated an exception: {exc}")
             else:
