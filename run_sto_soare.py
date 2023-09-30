@@ -32,7 +32,6 @@ def run_change_T(algos, n_trials=1000, save=True):
 
     results_total = np.zeros((len(algos), len(Ts), n_trials))
     min_gaps = np.zeros(len(Ts))
-    np.random.seed(6)
 
     for i, T in enumerate(Ts):
         X, thetas = get_soare_instance(d, T, omega)
@@ -40,6 +39,7 @@ def run_change_T(algos, n_trials=1000, save=True):
         min_gaps[i] = gap
 
         for j, algo in enumerate(algos):
+            np.random.seed(6)
             saving_dir = f'plot_data/{algo}/soare_sto'
             saving_file = f'{saving_dir}/results_T={T}.npz'
             results = run_trials_in_parallel_soare(n_trials, X, T, thetas, opt_arm, algo, saving_dir, saving_file, save=save, noise_level=noise_level, n_workers=6, setting_para=T)
