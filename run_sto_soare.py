@@ -39,7 +39,7 @@ def run_change_T(algos, n_trials=1000, save=True):
         min_gaps[i] = gap
 
         for j, algo in enumerate(algos):
-            np.random.seed(6)
+            # np.random.seed(6)
             saving_dir = f'plot_data/{algo}/soare_sto'
             saving_file = f'{saving_dir}/results_T={T}.npz'
             results = run_trials_in_parallel_soare(n_trials, X, T, thetas, opt_arm, algo, saving_dir, saving_file, save=save, noise_level=noise_level, n_workers=6, setting_para=T)
@@ -99,4 +99,4 @@ if __name__ == '__main__':
             print(f"{algo} accuracy: {np.mean(results[j], axis=1)}")
         print(f"Minimum gaps: {min_gaps}")
 
-    get_plot(algos)
+    # get_plot(algos)
