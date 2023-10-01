@@ -28,7 +28,7 @@ def run_change_T(algos, n_trials=1000, save=True):
     d = 10
     omega = 0.1
     noise_level = 1.0
-    Ts = np.array([10 + 1000 * i for i in range(7)])
+    Ts = np.array([10 + 1000 * i for i in range(6)])
 
     results_total = np.zeros((len(algos), len(Ts), n_trials))
     min_gaps = np.zeros(len(Ts))
@@ -39,17 +39,10 @@ def run_change_T(algos, n_trials=1000, save=True):
         min_gaps[i] = gap
 
         for j, algo in enumerate(algos):
-            # np.random.seed(6)
             saving_dir = f'plot_data/{algo}/soare_sto'
             saving_file = f'{saving_dir}/results_T={T}.npz'
             results = run_trials_in_parallel_soare(n_trials, X, T, thetas, opt_arm, algo, saving_dir, saving_file, save=save, noise_level=noise_level, n_workers=6, setting_para=T)
             results_total[j][i] = np.array(results)
-
-            # if save:
-            #     if not os.path.exists(f'plot_data/{algo}'):
-            #         os.makedirs(f'plot_data/{algo}')
-            #     np.savez_compressed(f'plot_data/{algo}/{algo}_results_soare_sto.npz', 
-            #                         results=results_total[j], Ts=Ts, min_gaps=min_gaps)
 
     return results_total, min_gaps
 
@@ -57,20 +50,24 @@ def run_change_T(algos, n_trials=1000, save=True):
 def get_plot(algos):
     fig, axs = plt.subplots(1, 1, figsize=(6, 5))
     for algo in algos:
-        # loaded = np.load(f'plot_data/{algo}/{algo}_results_soare_sto.npz')
-        # results = loaded['results']
-        # Ts = loaded['Ts']
         Ts = []
-        results = []
+        error_prob = []
+        confi_bound = []
         for file in os.listdir(f'plot_data/{algo}/soare_sto'):
             if file.endswith('.npz'):
                 loaded = np.load(f'plot_data/{algo}/soare_sto/{file}')
-                results.append(loaded['results'])
+                results = loaded['results']
+                error_prob.append(1.0 - np.mean(results))
+                confi_bound.append(1.96 * np.std(results) / np.sqrt(results.shape[0]))
                 Ts.append(loaded['T'])
-        results = np.array(results)
+
         Ts = np.array(Ts)
-        error_prob = 1.0 - np.mean(results, axis=1)
-        confi_bound = 1.96 * np.std(results, axis=1) / np.sqrt(results.shape[1])
+        error_prob = np.array(error_prob)
+        confi_bound = np.array(confi_bound)
+        sort_idx = np.argsort(Ts)
+        Ts = Ts[sort_idx]
+        error_prob = error_prob[sort_idx]
+        confi_bound = confi_bound[sort_idx]
         axs.plot(Ts, error_prob, 'o-', label=algo)
         axs.fill_between(Ts, error_prob - confi_bound, error_prob + confi_bound, alpha=0.4)
     axs.set_xlabel('budget ($T$)')
@@ -90,7 +87,7 @@ if __name__ == '__main__':
     run = args.run
 
     save = True
-    n_trials = 10000
+    n_trials = 5000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
@@ -99,4 +96,4 @@ if __name__ == '__main__':
             print(f"{algo} accuracy: {np.mean(results[j], axis=1)}")
         print(f"Minimum gaps: {min_gaps}")
 
-    # get_plot(algos)
+    get_plot(algos)

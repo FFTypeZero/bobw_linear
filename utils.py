@@ -74,13 +74,18 @@ def run_trials_in_parallel_soare(n_trials,
         futures = {executor.submit(single_trial, i, X, T, thetas, opt_arm, algo, noise_level, setting_para): i for i in range(n_trials)}
 
         results = []
+        results_this_run = []
         if not os.path.exists(saving_dir) and save:
             os.makedirs(saving_dir)
+        if os.path.exists(saving_file) and save:
+            loaded = np.load(saving_file)
+            results = list(loaded['results'])
         for future in concurrent.futures.as_completed(futures):
             trial_id = futures[future]
             try:
                 result = future.result()
                 results.append(result)
+                results_this_run.append(result)
                 if save:
                     np.savez_compressed(saving_file, results=results, T=T)
             except Exception as exc:
@@ -88,7 +93,7 @@ def run_trials_in_parallel_soare(n_trials,
             else:
                 print(f"Trial {trial_id} completed successfully.")
 
-    return results
+    return results_this_run
 
 
 def compute_gap(X, thetas):
