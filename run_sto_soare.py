@@ -87,7 +87,7 @@ if __name__ == '__main__':
     run = args.run
 
     save = True
-    n_trials = 5000
+    n_trials = 20000
     algos = ['G-BAI', 'Peace', 'P1-Peace', 'P1-RAGE', 'OD-LinBAI', 'Mixed-Peace']
 
     if run:
