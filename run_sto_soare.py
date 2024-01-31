@@ -1,8 +1,12 @@
 import os
 import argparse
+import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import run_trials_in_parallel_soare, compute_gap
+
+matplotlib.rcParams['ps.useafm'] = True
+matplotlib.rcParams['pdf.use14corefonts'] = True
 
 
 def get_soare_instance(d, T, omega):
@@ -81,7 +85,7 @@ def get_plot(algos):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run stationary experiments")
-    parser.add_argument("-r", "--run", type=int, default=1,
+    parser.add_argument("-r", "--run", type=int, default=0,
                         help="Whether to run the experiments or just plot the results")
     args = parser.parse_args()
     run = args.run
