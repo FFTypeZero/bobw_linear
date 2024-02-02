@@ -228,7 +228,8 @@ def get_plot(algos):
     axs[1, 1].grid(True)
 
     # plt.suptitle("Experiments under Non-stationary Multivariate Testing Example")
-    plt.show()
+    plt.savefig('figs/adv_multi_log_lower.pdf', bbox_inches='tight')
+    # plt.show()
 
 
 if __name__ == '__main__':

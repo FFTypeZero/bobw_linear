@@ -99,7 +99,8 @@ def get_plot(case, title):
     axs.set_title(title)
 
     plt.tight_layout()
-    plt.show()
+    plt.savefig(f'figs/error_{case}.pdf', bbox_inches='tight')
+    # plt.show()
 
 
 if __name__ == '__main__':

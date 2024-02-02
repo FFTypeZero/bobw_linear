@@ -72,7 +72,8 @@ def get_plot(algos):
     axs.grid(True)
     axs.set_title('Experiments under Yahoo! News Article Example')
 
-    plt.show()
+    plt.savefig('figs/adv_yahoo_log.pdf', bbox_inches='tight')
+    # plt.show()
 
 
 if __name__ == '__main__':

@@ -80,7 +80,8 @@ def get_plot(algos):
     axs.set_title("Error Probability vs. $T$ Under Soare et al. (2014)'s Example")
     axs.legend(loc='best')
     axs.grid(True)
-    plt.show()
+    plt.savefig('figs/sto_soare_log.pdf', bbox_inches='tight')
+    # plt.show()
 
 
 if __name__ == '__main__':

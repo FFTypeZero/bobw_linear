@@ -135,7 +135,8 @@ def get_plot(algos):
     axs[1, 1].grid(True)
 
     # plt.suptitle("Experiments under Non-stationary Soare et al. (2014)'s Example")
-    plt.show()
+    plt.savefig('figs/adv_soare_log.pdf', bbox_inches='tight')
+    # plt.show()
 
 
 if __name__ == '__main__':
