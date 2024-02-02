@@ -8,6 +8,7 @@ from run_adv_multi import get_sto_multi
 
 matplotlib.rcParams['ps.useafm'] = True
 matplotlib.rcParams['pdf.use14corefonts'] = True
+matplotlib.rcParams['text.usetex'] = True
 
 
 def get_malicious_instance(d, T, omega):

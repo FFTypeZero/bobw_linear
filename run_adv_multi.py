@@ -9,6 +9,7 @@ from utils import run_trials_in_parallel, compute_gap
 
 matplotlib.rcParams['ps.useafm'] = True
 matplotlib.rcParams['pdf.use14corefonts'] = True
+matplotlib.rcParams['text.usetex'] = True
 
 
 def get_sto_multi(D, T, num_sparse=None):
@@ -223,7 +224,7 @@ def get_plot(algos):
         # axs[0, i].set_ylim([-0.05, 1.05])
         axs[0, i].set_yscale('log')
         axs[0, i].grid(True)
-    axs[0, 0].legend(loc='lower left', bbox_to_anchor=(0.15,0), bbox_transform=fig.transFigure, ncol=len(algos))
+    axs[0, 0].legend(loc='center', bbox_to_anchor=(0.5,0), bbox_transform=fig.transFigure, ncol=len(algos))
     axs[1, 0].grid(True)
     axs[1, 1].grid(True)
 

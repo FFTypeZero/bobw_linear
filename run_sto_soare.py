@@ -7,6 +7,7 @@ from utils import run_trials_in_parallel_soare, compute_gap
 
 matplotlib.rcParams['ps.useafm'] = True
 matplotlib.rcParams['pdf.use14corefonts'] = True
+matplotlib.rcParams['text.usetex'] = True
 
 
 def get_soare_instance(d, T, omega):
